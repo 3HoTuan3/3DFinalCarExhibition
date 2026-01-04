@@ -15,21 +15,42 @@ setupLights(scene);
 
 // 2. SETUP LAYOUT
 const booths = []; 
-const boothPositions = [
-    { x: -12, z: -12, name: "North-West" },
-    { x: 12, z: -12,  name: "North-East" },
-    { x: 12, z: 12,   name: "South-East" },
-    { x: -12, z: 12,  name: "South-West" }
+const boothData = [
+    { 
+        x: -12, z: -12, 
+        name: "Ford",
+        logo: './assets/textures/ford.svg',
+        text: "FORD - BUILT FORD TOUGH"
+    },
+    { 
+        x: 12, z: -12,  
+        name: "BMW",
+        logo: './assets/textures/BMW.svg',
+        text: "BMW - THE ULTIMATE DRIVING MACHINE"
+    },
+    { 
+        x: 12, z: 12,   
+        name: "Lexus",
+        logo: './assets/textures/Lexus.svg',
+        text: "LEXUS - EXPERIENCE AMAZING"
+    },
+    { 
+        x: -12, z: 12,  
+        name: "Porsche",
+        logo: './assets/textures/Porsche.svg',
+        text: "PORSCHE - THERE IS NO SUBSTITUTE"
+    }
 ];
 
-boothPositions.forEach((pos) => {
-    const booth = new Booth(scene, { x: pos.x, y: 0, z: pos.z });
+boothData.forEach((data) => {
+    // Truyền toàn bộ object `data` vào constructor Booth
+    const booth = new Booth(scene, { x: data.x, y: 0, z: data.z }, data);
     booth.mesh.lookAt(0, 0, 0); 
     const pillar = new Pillar(booth.mesh);
-    booths.push({ booth, pillar, position: pos });
+    booths.push({ booth, pillar, data: data });
 });
 
-// --- TẠO VIP BOOTH Ở GIỮA ---
+// --- VIP BOOTH Ở GIỮA ---
 const vipBooth = new VipBooth(scene, { x: 0, y: 0, z: 0 });
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -74,7 +95,7 @@ function animate() {
     updateMovement(delta);
     // --- VIP BOOTH ---
     if (vipBooth) vipBooth.update(delta);
-    
+
     booths.forEach(item => {
         if (item.booth && item.booth.update) {
             item.booth.update(delta);

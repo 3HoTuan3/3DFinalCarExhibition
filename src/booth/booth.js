@@ -2,19 +2,23 @@ import * as THREE from 'three';
 import { loadGLTF } from '../utils/loadGLTF.js';
 
 export class Booth {
-    constructor(scene, position = { x: 0, y: 0, z: 0 }) {
+    constructor(scene, position = { x: 0, y: 0, z: 0 }, config = {}) {
         this.scene = scene;
         this.position = position;
-        
+
         // Các biến cho màn hình LED
         this.ledCanvas = null;
         this.ledContext = null;
         this.ledTexture = null;
         this.textX = 0;
-        
-        // Load Logo mặc định (Bạn có thể sửa thành logo khác)
+
+        // Nhận dữ liệu từ main.js truyền sang
+        this.brandName = config.name || "Brand";
+        this.logoUrl = config.logo || './assets/textures/default.png';
+        this.marqueeText = config.text || "WELCOME TO CAR EXHIBITION";
+
         this.logoImg = new Image();
-        this.logoImg.src = './assets/textures/toyota.svg'; // Đảm bảo file này tồn tại hoặc thay bằng ảnh khác
+        this.logoImg.src = this.logoUrl;
 
         this.init();
     }
@@ -23,7 +27,7 @@ export class Booth {
         this.mesh = new THREE.Group();
         this.mesh.position.set(this.position.x, this.position.y, this.position.z);
 
-        // --- 1. SÀN & TƯỜNG (Giữ nguyên) ---
+        // --- 1. SÀN & TƯỜNG ---
         const floorGeo = new THREE.BoxGeometry(8, 0.4, 6);
         const floorMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.2, metalness: 0.1 });
         const platform = new THREE.Mesh(floorGeo, floorMat);
@@ -39,31 +43,27 @@ export class Booth {
         backWall.receiveShadow = true;
         this.mesh.add(backWall);
 
-        // --- 2. BẢNG HIỆU (KHUNG ĐỠ) ---
-        // Cái hộp đen cũ đóng vai trò là khung đỡ phía sau
-        const signFrameGeo = new THREE.BoxGeometry(3.2, 1.0, 0.1); // To hơn màn hình chút để làm viền
+        // --- 2. BẢNG HIỆU ---
+        const signFrameGeo = new THREE.BoxGeometry(3.2, 1.0, 0.1);
         const signFrameMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
         const signFrame = new THREE.Mesh(signFrameGeo, signFrameMat);
         signFrame.position.set(0, 3, -2.8);
         this.mesh.add(signFrame);
 
-        // --- 3. MÀN HÌNH LED (PLANE PHẲNG) ---
+        // --- 3. MÀN HÌNH LED ---
         this.createLedTexture();
-        
+
         // Màn hình nhỏ hơn khung một chút (Rộng 3m, Cao 0.8m)
         const screenGeo = new THREE.PlaneGeometry(3.0, 0.8);
-        const screenMat = new THREE.MeshStandardMaterial({ 
+        const screenMat = new THREE.MeshStandardMaterial({
             map: this.ledTexture,
             emissive: 0xffffff,
             emissiveMap: this.ledTexture,
             emissiveIntensity: 0.8
         });
-        const screen = new THREE.Mesh(screenGeo, screenMat);
-        
         // Đặt màn hình nằm đè lên mặt trước của khung
-        // Khung ở z = -2.8, dày 0.1 -> mặt trước là -2.8 + 0.05 = -2.75
-        // Ta đặt màn hình ở -2.74 để nó nổi lên trên, không bị lẹm hình (z-fighting)
-        screen.position.set(0, 3, -2.74); 
+        const screen = new THREE.Mesh(screenGeo, screenMat);
+        screen.position.set(0, 3, -2.74);
         this.mesh.add(screen);
 
 
@@ -74,7 +74,7 @@ export class Booth {
             lampModel.scale.set(0.1, 0.1, 0.1);
             lampModel.rotation.set(-Math.PI / 6, 1.58, 7);
             lampModel.position.set(0, 3.8, -2.8);
-            
+
             this.mesh.add(lampModel);
         } catch (error) {
             // console.error("Lỗi model đèn:", error); 
@@ -98,10 +98,10 @@ export class Booth {
         this.ledCanvas.width = 1024;
         this.ledCanvas.height = 256;
         this.ledContext = this.ledCanvas.getContext('2d');
-        
+
         this.ledTexture = new THREE.CanvasTexture(this.ledCanvas);
         this.ledTexture.colorSpace = THREE.SRGBColorSpace;
-        
+
         this.textX = this.ledCanvas.width;
         this.drawLedContent();
     }
@@ -112,13 +112,13 @@ export class Booth {
         const height = this.ledCanvas.height;
 
         // 1. Nền xanh đậm
-        ctx.fillStyle = '#000088'; 
+        ctx.fillStyle = '#000088';
         ctx.fillRect(0, 0, width, height);
-        
+
         // Lưới LED
         ctx.fillStyle = 'rgba(0,0,0,0.5)';
-        for(let i=0; i<width; i+=4) ctx.fillRect(i, 0, 1, height);
-        for(let i=0; i<height; i+=4) ctx.fillRect(0, i, width, 1);
+        for (let i = 0; i < width; i += 4) ctx.fillRect(i, 0, 1, height);
+        for (let i = 0; i < height; i += 4) ctx.fillRect(0, i, width, 1);
 
         // 2. Logo
         if (this.logoImg.complete && this.logoImg.naturalWidth !== 0) {
@@ -129,11 +129,11 @@ export class Booth {
         } else {
             ctx.fillStyle = 'red';
             ctx.beginPath();
-            ctx.arc(100, height/2, 80, 0, Math.PI*2);
+            ctx.arc(100, height / 2, 80, 0, Math.PI * 2);
             ctx.fill();
             ctx.fillStyle = 'white';
             ctx.font = 'bold 30px Arial';
-            ctx.fillText("BRAND", 50, height/2 + 10);
+            ctx.fillText("BRAND", 50, height / 2 + 10);
         }
 
         // 3. Chữ chạy
@@ -141,8 +141,8 @@ export class Booth {
         ctx.font = 'bold 80px Arial';
         ctx.shadowColor = '#00ffff';
         ctx.shadowBlur = 5;
-        
-        const text = "WELCOME TO CAR EXHIBITION 2024 - CLICK PILLAR TO VIEW CARS";
+
+        const text = this.marqueeText;
         ctx.fillText(text, this.textX, 160);
 
         // Update vị trí
