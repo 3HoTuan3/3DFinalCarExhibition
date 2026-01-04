@@ -123,16 +123,16 @@ export class VipBooth {
         this.ledCanvas.width = 1024; 
         this.ledCanvas.height = 256;
         this.ledContext = this.ledCanvas.getContext('2d');
-
         // Khởi tạo texture từ canvas
         this.ledTexture = new THREE.CanvasTexture(this.ledCanvas);
         this.ledTexture.colorSpace = THREE.SRGBColorSpace;
-        
+        // start text off-screen to the right
+        this.textX = this.ledCanvas.width + 250;
         // Vẽ frame đầu tiên
         this.drawLedContent();
     }
 
-    // --- HÀM VẼ LÊN CANVAS (Chạy liên tục) ---
+    // --- HÀM VẼ CANVAS ---
     drawLedContent() {
         const ctx = this.ledContext;
         const width = this.ledCanvas.width;
@@ -169,8 +169,9 @@ export class VipBooth {
         this.textX -= 2; 
         // Nếu chạy hết chữ thì reset về bên phải
         const textWidth = ctx.measureText(text).width;
-        if (this.textX < -textWidth) {
-            this.textX = width;
+        // consider the +250 drawing offset so reset only after whole text left the screen
+        if (this.textX + 250 < -textWidth) {
+            this.textX = width + 250;
         }
         if (this.ledTexture) {
             this.ledTexture.needsUpdate = true;
@@ -182,8 +183,7 @@ export class VipBooth {
         if (this.turntable) {
             this.turntable.rotation.y += 0.1 * delta;
         }
-
-        // Cập nhật màn hình LED (Chữ chạy)
+        // Cập nhật màn hình LED
         this.drawLedContent();
     }
 }
