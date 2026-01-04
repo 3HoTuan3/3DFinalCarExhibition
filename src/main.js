@@ -74,6 +74,13 @@ function animate() {
     updateMovement(delta);
     // --- VIP BOOTH ---
     if (vipBooth) vipBooth.update(delta);
+    
+    booths.forEach(item => {
+        if (item.booth && item.booth.update) {
+            item.booth.update(delta);
+        }
+    });
+
     renderer.render(scene, camera);
 }
 

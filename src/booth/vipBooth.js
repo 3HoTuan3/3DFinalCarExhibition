@@ -121,7 +121,7 @@ export class VipBooth {
     // --- HÀM TẠO TEXTURE ĐỘNG ---
     createLedTexture() {
         this.ledCanvas = document.createElement('canvas');
-        // Kích thước canvas càng lớn thì chữ càng nét, nhưng nặng hơn
+        // Kích thước canvas
         this.ledCanvas.width = 1024;
         this.ledCanvas.height = 256;
         this.ledContext = this.ledCanvas.getContext('2d');
@@ -130,7 +130,6 @@ export class VipBooth {
         this.ledTexture.colorSpace = THREE.SRGBColorSpace;
         // start text off-screen to the right
         this.textX = this.ledCanvas.width + 250;
-        // Vẽ frame đầu tiên
         this.drawLedContent();
     }
 
@@ -171,9 +170,9 @@ export class VipBooth {
         const text = "VIP EXHIBITION - 2024 SUPER CAR COLLECTION";
         // Vẽ chữ tại vị trí this.textX
         ctx.fillText(text, this.textX + 250, 160);
-        // Cập nhật vị trí cho frame sau (Chạy sang trái)
-        this.textX -= 2;
-        // Nếu chạy hết chữ thì reset về bên phải
+        // Cập nhật vị trí (Chạy sang trái)
+        this.textX -= 6; //tốc độ chạy
+        //Chạy hết chữ thì reset về bên phải
         const textWidth = ctx.measureText(text).width;
         // consider the +250 drawing offset so reset only after whole text left the screen
         if (this.textX + 250 < -textWidth) {

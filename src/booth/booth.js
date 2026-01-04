@@ -5,16 +5,25 @@ export class Booth {
     constructor(scene, position = { x: 0, y: 0, z: 0 }) {
         this.scene = scene;
         this.position = position;
+        
+        // Các biến cho màn hình LED
+        this.ledCanvas = null;
+        this.ledContext = null;
+        this.ledTexture = null;
+        this.textX = 0;
+        
+        // Load Logo mặc định (Bạn có thể sửa thành logo khác)
+        this.logoImg = new Image();
+        this.logoImg.src = './assets/textures/toyota.svg'; // Đảm bảo file này tồn tại hoặc thay bằng ảnh khác
 
         this.init();
     }
 
     async init() {
-        // Group chứa toàn bộ gian hàng
         this.mesh = new THREE.Group();
         this.mesh.position.set(this.position.x, this.position.y, this.position.z);
 
-        // --- 1. SÀN & TƯỜNG ---
+        // --- 1. SÀN & TƯỜNG (Giữ nguyên) ---
         const floorGeo = new THREE.BoxGeometry(8, 0.4, 6);
         const floorMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.2, metalness: 0.1 });
         const platform = new THREE.Mesh(floorGeo, floorMat);
@@ -30,69 +39,123 @@ export class Booth {
         backWall.receiveShadow = true;
         this.mesh.add(backWall);
 
-        // --- 2. BẢNG ĐEN ---
-        const signGeo = new THREE.BoxGeometry(3, 0.8, 0.1);
-        const signMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
-        const sign = new THREE.Mesh(signGeo, signMat);
-        sign.position.set(0, 3, -2.8);
-        this.mesh.add(sign);
+        // --- 2. BẢNG HIỆU (KHUNG ĐỠ) ---
+        // Cái hộp đen cũ đóng vai trò là khung đỡ phía sau
+        const signFrameGeo = new THREE.BoxGeometry(3.2, 1.0, 0.1); // To hơn màn hình chút để làm viền
+        const signFrameMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
+        const signFrame = new THREE.Mesh(signFrameGeo, signFrameMat);
+        signFrame.position.set(0, 3, -2.8);
+        this.mesh.add(signFrame);
 
-        // --- 3. MODEL SPOTLIGHT ---
+        // --- 3. MÀN HÌNH LED (PLANE PHẲNG) ---
+        this.createLedTexture();
+        
+        // Màn hình nhỏ hơn khung một chút (Rộng 3m, Cao 0.8m)
+        const screenGeo = new THREE.PlaneGeometry(3.0, 0.8);
+        const screenMat = new THREE.MeshStandardMaterial({ 
+            map: this.ledTexture,
+            emissive: 0xffffff,
+            emissiveMap: this.ledTexture,
+            emissiveIntensity: 0.8
+        });
+        const screen = new THREE.Mesh(screenGeo, screenMat);
+        
+        // Đặt màn hình nằm đè lên mặt trước của khung
+        // Khung ở z = -2.8, dày 0.1 -> mặt trước là -2.8 + 0.05 = -2.75
+        // Ta đặt màn hình ở -2.74 để nó nổi lên trên, không bị lẹm hình (z-fighting)
+        screen.position.set(0, 3, -2.74); 
+        this.mesh.add(screen);
+
+
+        // --- 4. MODEL SPOTLIGHT ---
         try {
-            const modelUrl = new URL('../../assets/models/SpotLight/simple_spotlight_lamp.glb', import.meta.url).href;
-            const gltf = await loadGLTF(modelUrl);
+            const gltf = await loadGLTF('./assets/models/SpotLight/simple_spotlight_lamp.glb');
             const lampModel = gltf.scene;
-
-            // 1) Scale mặc định, tùy chỉnh nếu model quá lớn/nhỏ
             lampModel.scale.set(0.1, 0.1, 0.1);
-
-            // 2) Đặt rotation sao cho "mắt đèn" hướng ra ngoài (vuông góc với tường).
-            lampModel.rotation.set(-Math.PI / 6, 1.55, 7);
-
-            // 3) Tính bounding box của model sau khi scale để đặt sát mặt tường
-            const box = new THREE.Box3().setFromObject(lampModel);
-            const size = new THREE.Vector3();
-            box.getSize(size);
-            const centerWorld = new THREE.Vector3();
-            box.getCenter(centerWorld);
-
-            // front face Z của backWall (vì backWall.position.z là tâm, depth = 0.2)
-            const wallFrontZ = backWall.position.z + 0.1;
-            const mountOffset = 0.03; // khoảng cách nhỏ để tránh xuyên chính xác
-
-            // Muốn center của model ở vị trí: wallFrontZ - (half depth of model)
-            const desiredCenterZ = wallFrontZ - (size.z / 2) - mountOffset;
-            const deltaZ = desiredCenterZ - centerWorld.z;
-
-            // Dịch model theo world Z -> chuyển về local position của lampModel
-            lampModel.position.add(new THREE.Vector3(0, 0, deltaZ));
-
-            // 4) Đặt cao độ (y) để lamp "gắn" vào tường khoảng ở trên sign
-            const desiredY = 3.5;
-            // Tính current world center Y và dịch tương ứng
-            const currentCenterY = box.getCenter(new THREE.Vector3()).y;
-            const deltaY = desiredY - currentCenterY;
-            lampModel.position.add(new THREE.Vector3(0, deltaY, 0.8));
-
+            lampModel.rotation.set(-Math.PI / 6, 1.58, 7);
+            lampModel.position.set(0, 3.8, -2.8);
+            
             this.mesh.add(lampModel);
-            console.log("Đã load & đặt đèn lên tường");
         } catch (error) {
-            console.error("Lỗi không tìm thấy file model đèn:", error);
+            // console.error("Lỗi model đèn:", error); 
         }
 
-        // --- 4. NGUỒN SÁNG THỰC TẾ (LIGHT SOURCE) ---
+        // --- 5. NGUỒN SÁNG ---
         const spotLight = new THREE.SpotLight(0xffffff, 150);
         spotLight.position.set(0, 3.5, -2.5);
-
+        spotLight.target = platform;
         spotLight.angle = Math.PI / 5;
         spotLight.penumbra = 0.3;
-        spotLight.decay = 1;
-        spotLight.distance = 20;
         spotLight.castShadow = true;
-        spotLight.target = platform;
         this.mesh.add(spotLight);
         this.mesh.add(spotLight.target);
 
         this.scene.add(this.mesh);
+    }
+
+    createLedTexture() {
+        this.ledCanvas = document.createElement('canvas');
+        this.ledCanvas.width = 1024;
+        this.ledCanvas.height = 256;
+        this.ledContext = this.ledCanvas.getContext('2d');
+        
+        this.ledTexture = new THREE.CanvasTexture(this.ledCanvas);
+        this.ledTexture.colorSpace = THREE.SRGBColorSpace;
+        
+        this.textX = this.ledCanvas.width;
+        this.drawLedContent();
+    }
+
+    drawLedContent() {
+        const ctx = this.ledContext;
+        const width = this.ledCanvas.width;
+        const height = this.ledCanvas.height;
+
+        // 1. Nền xanh đậm
+        ctx.fillStyle = '#000088'; 
+        ctx.fillRect(0, 0, width, height);
+        
+        // Lưới LED
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        for(let i=0; i<width; i+=4) ctx.fillRect(i, 0, 1, height);
+        for(let i=0; i<height; i+=4) ctx.fillRect(0, i, width, 1);
+
+        // 2. Logo
+        if (this.logoImg.complete && this.logoImg.naturalWidth !== 0) {
+            const aspect = this.logoImg.width / this.logoImg.height;
+            const drawHeight = 200;
+            const drawWidth = drawHeight * aspect;
+            ctx.drawImage(this.logoImg, 20, 28, drawWidth, drawHeight);
+        } else {
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(100, height/2, 80, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 30px Arial';
+            ctx.fillText("BRAND", 50, height/2 + 10);
+        }
+
+        // 3. Chữ chạy
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 80px Arial';
+        ctx.shadowColor = '#00ffff';
+        ctx.shadowBlur = 5;
+        
+        const text = "WELCOME TO CAR EXHIBITION 2024 - CLICK PILLAR TO VIEW CARS";
+        ctx.fillText(text, this.textX, 160);
+
+        // Update vị trí
+        this.textX -= 6; // Tốc độ chạy
+        const textWidth = ctx.measureText(text).width;
+        if (this.textX < -textWidth) {
+            this.textX = width;
+        }
+
+        if (this.ledTexture) this.ledTexture.needsUpdate = true;
+    }
+
+    update(delta) {
+        this.drawLedContent();
     }
 }
