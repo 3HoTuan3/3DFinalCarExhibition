@@ -7,36 +7,54 @@ export class Pillar {
     }
 
     init() {
-        // Đế trụ
-        const baseGeo = new THREE.BoxGeometry(0.6, 1.2, 0.6);
-        const baseMat = new THREE.MeshStandardMaterial({ 
-            color: 0x222222, // Màu đen kim loại
-            roughness: 0.3,
-            metalness: 0.8
-        });
-        this.mesh = new THREE.Mesh(baseGeo, baseMat);
+        // Tạo một Group để chứa các phần của cái trụ (Chân, Thân, Mặt điều khiển)
+        this.mesh = new THREE.Group();
+        this.mesh.position.set(3.5, 0, 2.5); 
         
-        // Đặt ở góc trước bên phải của sàn (sàn rộng 8m -> x=3.5, sâu 6m -> z=2.5)
-        this.mesh.position.set(3.5, 0.6, 2.5); 
-        this.mesh.castShadow = true;
-        this.mesh.receiveShadow = true;
+        // --- 1. CHÂN ĐẾ (BASE) ---
+        const baseGeo = new THREE.CylinderGeometry(0.4, 0.5, 0.1, 32);
+        const darkMat = new THREE.MeshStandardMaterial({ 
+            color: 0x111111,
+            roughness: 0.2, 
+            metalness: 0.8 
+        });
+        const base = new THREE.Mesh(baseGeo, darkMat);
+        base.position.y = 0.05;
+        base.castShadow = true;
+        base.receiveShadow = true;
+        this.mesh.add(base);
 
-        // --- NÚT BẤM (BUTTON) ---
-        // Làm nút đỏ nổi bật trên mặt trụ
-        const btnGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.1, 32);
+        // --- 2. THÂN TRỤ (STEM) ---
+        const stemGeo = new THREE.CylinderGeometry(0.1, 0.1, 1.0, 32);
+        const stem = new THREE.Mesh(stemGeo, darkMat);
+        stem.position.y = 0.5 + 0.05;
+        stem.castShadow = true;
+        stem.receiveShadow = true;
+        this.mesh.add(stem);
+
+        // --- 3. MẶT BÀN ĐIỀU KHIỂN (CONSOLE PLATE) ---
+        const plateGeo = new THREE.BoxGeometry(0.5, 0.05, 0.6);
+        const plate = new THREE.Mesh(plateGeo, darkMat);
+        plate.position.y = 1.0 + 0.05; 
+        plate.rotation.x = Math.PI / 6; 
+        
+        plate.castShadow = true;
+        this.mesh.add(plate);
+
+        // --- 4. NÚT BẤM (BUTTON) ---
+        const btnGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.05, 32);
         const btnMat = new THREE.MeshStandardMaterial({ 
             color: 0xff0000, 
-            emissive: 0xaa0000, // Tự phát sáng nhẹ
-            emissiveIntensity: 0.5
+            emissive: 0xaa0000,
+            emissiveIntensity: 0.8
         });
         const button = new THREE.Mesh(btnGeo, btnMat);
-        button.position.y = 0.6; // Nằm trên đỉnh trụ
-        this.mesh.add(button); // Gắn nút vào trụ
-
-        // QUAN TRỌNG: Gán userData vào cái NÚT (hoặc cả trụ) để Raycaster bắt dính
-        this.mesh.userData = { isClickable: true, type: 'pillar' };
-        button.userData = { isClickable: true, type: 'pillar' }; // Bấm vào nút cũng ăn
-
+        // Đặt nút hơi nhô lên
+        button.position.y = 0.05; 
+        button.userData = { isClickable: true, type: 'pillar' }; 
+        plate.add(button);
+        
+        // Add toàn bộ cụm trụ vào Booth
         this.parent.add(this.mesh);
     }
 }
