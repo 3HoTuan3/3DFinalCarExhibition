@@ -53,6 +53,8 @@ function showCarInfo(carData) {
     document.getElementById('info-price').innerText = carData.Price;
     document.getElementById('info-engine').innerText = carData.engine;
     document.getElementById('info-power').innerText = carData.power;
+    document.getElementById('info-seating').innerText = carData.seating_capacity;
+    document.getElementById('info-year').innerText = carData.year;
     document.getElementById('info-desc').innerText = carData.global_information || "No description available.";
 
     infoPanel.style.display = 'block';
