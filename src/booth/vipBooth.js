@@ -30,7 +30,7 @@ export class VipBooth {
         // Sàn đen bóng
         const floorGeo = new THREE.CylinderGeometry(this.radius, this.radius, 0.4, 64);
         const floorMat = new THREE.MeshStandardMaterial({
-            color: 0x050505, roughness: 0.1, metalness: 0.8
+            color: 0xdeddd5, roughness: 0.1, metalness: 0.8
         });
         const platform = new THREE.Mesh(floorGeo, floorMat);
         platform.position.y = 0.2;
@@ -89,34 +89,44 @@ export class VipBooth {
         this.pillarObj.mesh.rotation.y = Math.PI;
 
         // --- 5. ĐÈN HẮT SÀN ---
-        const numLights = 8;
-        const lightRadius = 5.0;
+        const numLights = 4;
+        const lightRadius = 5.5;
+
         for (let i = 0; i < numLights; i++) {
-            const angle = (i / numLights) * Math.PI * 2; // Chia đều 360 độ
+            const angle = (i / numLights) * Math.PI * 2 + (Math.PI / 4); 
             const x = Math.cos(angle) * lightRadius;
             const z = Math.sin(angle) * lightRadius;
-            // a) Tạo model cái đèn dưới đất
-            const lampBaseGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.05, 16);
-            const lampBaseMat = new THREE.MeshStandardMaterial({
-                color: 0x888888,
-                emissive: 0xffffff,
-                emissiveIntensity: 1
+
+            // a) Tạo model vỏ đèn
+            const lampBaseGeo = new THREE.CylinderGeometry(0.2, 0.25, 0.4, 16);
+            const lampBaseMat = new THREE.MeshStandardMaterial({ 
+                color: 0x222222, 
+                roughness: 0.5,
+                metalness: 0.8
             });
             const lampBase = new THREE.Mesh(lampBaseGeo, lampBaseMat);
-            lampBase.position.set(x, 0.42, z);
+            // Đặt đèn nằm trên sàn
+            lampBase.position.set(x, 0.2, z); 
+            lampBase.lookAt(0, 1, 0); 
+            lampBase.rotateX(-Math.PI / 2);
             this.mesh.add(lampBase);
-            // b) Tạo ánh sáng chiếu lên
-            const spotLight = new THREE.SpotLight(0xffffff, 50);
-            spotLight.position.set(x, 0.45, z);
-            spotLight.target.position.set(x, 5, z);
-            spotLight.angle = Math.PI / 6;
-            spotLight.penumbra = 0.5;
-            spotLight.distance = 15;
-            spotLight.castShadow = false;
+
+            // b) Tạo SpotLight
+            // Intensity = 800
+            const spotLight = new THREE.SpotLight(0xffffff, 20); 
+            // Vị trí nguồn sáng
+            spotLight.position.set(x, 0.5, z); 
+            // Target chiếu vào thân xe
+            spotLight.target.position.set(0, 1.2, 0); 
+            
+            spotLight.angle = Math.PI / 5; // Góc mở khoảng 35-36 độ
+            spotLight.penumbra = 0.5;      // Viền mềm
+            spotLight.distance = 20;       // Tầm xa
+            spotLight.decay = 1;           // Độ suy giảm ánh sáng
+            spotLight.castShadow = false; 
             this.mesh.add(spotLight);
             this.mesh.add(spotLight.target);
         }
-        this.scene.add(this.mesh);
 
         try {
             const response = await fetch('./src/data/car.json');

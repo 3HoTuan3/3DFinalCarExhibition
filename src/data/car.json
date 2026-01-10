@@ -79,19 +79,6 @@
             "global_information": "The 2025 Toyota Land Cruiser is a full-size SUV known for its off-road capabilities and luxurious features. It is powered by a robust 3.5L V6 twin-turbo gasoline engine that delivers 409 hp, paired with a smooth 10-Speed Automatic transmission. The vehicle offers spacious seating for up to seven passengers, making it ideal for both family adventures and rugged terrains."
         },
         {
-            "Name": "Toyota Camper Van RV",
-            "vehicle_type": "Recreational Vehicle",
-            "model": "./assets/models/Toyota/aged_toyota_camper_van_rv.glb",
-            "scale": 1.0,
-            "Price": "185000$",
-            "engine": "4.5L V6 twin-turbo, gasoline",
-            "transmission": "10-Speed Automatic",
-            "power": "500 hp",
-            "seating_capacity": 7,
-            "year": 2004,
-            "global_information": "The 2004 Toyota Camper Van RV is a versatile recreational vehicle designed for comfortable travel and camping. It features a reliable 4.5L V6 twin-turbo gasoline engine that delivers 500 hp, paired with a smooth 10-Speed Automatic transmission. The vehicle offers spacious seating for up to seven passengers, making it ideal for family trips and outdoor adventures."
-        },
-        {
             "Name": "Toyota AE86 Black Limited",
             "vehicle_type": "Sports Car",
             "model": "./assets/models/Toyota/toyota_ae86_black_limited_kouki.glb",
