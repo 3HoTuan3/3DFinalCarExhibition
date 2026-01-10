@@ -1,0 +1,35 @@
+#car-info-panel {
+    display: none; /* Mặc định ẩn */
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    background: rgba(0, 0, 0, 0.85); /* Nền đen kính */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.2);
+    z-index: 200; /* Nổi lên trên cùng */
+}
+
+#close-btn {
+    position: absolute;
+    top: 10px; right: 15px;
+    background: none; border: none;
+    color: white; font-size: 30px;
+    cursor: pointer;
+}
+#close-btn:hover { color: #ff0000; }
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+}

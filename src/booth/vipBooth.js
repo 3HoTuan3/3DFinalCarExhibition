@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Pillar } from './pillar.js';
 import { loadGLTF } from '../utils/loadGLTF.js';
+import { CarManager } from './carManager.js';
 
 export class VipBooth {
     constructor(scene, position = { x: 0, y: 0, z: 0 }) {
@@ -12,12 +13,12 @@ export class VipBooth {
         this.ledCanvas = null;
         this.ledContext = null;
         this.ledTexture = null;
-        this.textX = 0; // Vị trí chữ để làm hiệu ứng chạy
+        this.textX = 0;
 
         this.init();
     }
 
-    init() {
+    async init() {
         this.mesh = new THREE.Group();
         this.mesh.position.set(this.position.x, this.position.y, this.position.z);
         this.logoImg = new Image();
@@ -111,14 +112,29 @@ export class VipBooth {
             spotLight.angle = Math.PI / 6;
             spotLight.penumbra = 0.5;
             spotLight.distance = 15;
-            spotLight.castShadow = true;
+            spotLight.castShadow = false;
             this.mesh.add(spotLight);
             this.mesh.add(spotLight.target);
         }
         this.scene.add(this.mesh);
+
+        try {
+            const response = await fetch('./src/data/car.json');
+            const data = await response.json();
+            const toyotaCars = data["Toyota"];
+            if (toyotaCars) {
+                // Khởi tạo CarManager với sàn xoay (turntable)
+                this.carManager = new CarManager(this.scene, this.turntable, toyotaCars);
+                // Load xe đầu tiên
+                this.carManager.nextCar();
+            }
+        } catch (error) {
+            console.error("Lỗi load cars.json:", error);
+        }
+        this.scene.add(this.mesh);
     }
 
-    // --- HÀM TẠO TEXTURE ĐỘNG ---
+    // --- TẠO TEXTURE ĐỘNG ---
     createLedTexture() {
         this.ledCanvas = document.createElement('canvas');
         // Kích thước canvas
@@ -133,7 +149,7 @@ export class VipBooth {
         this.drawLedContent();
     }
 
-    // --- HÀM VẼ CANVAS ---
+    // --- VẼ CANVAS ---
     drawLedContent() {
         const ctx = this.ledContext;
         const width = this.ledCanvas.width;
@@ -153,13 +169,13 @@ export class VipBooth {
             // Vẽ ảnh tại x=20, y=20, rộng 200, cao 200
             ctx.drawImage(this.logoImg, 20, 28, 200, 200);
         } else {
-        ctx.fillStyle = 'red';
-        ctx.beginPath();
-        ctx.arc(100, height / 2, 80, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 30px Arial';
-        ctx.fillText("LOGO", 55, height / 2 + 10);
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(100, height / 2, 80, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 30px Arial';
+            ctx.fillText("LOGO", 55, height / 2 + 10);
         }
 
         // 3. VẼ CHỮ CHẠY
@@ -180,6 +196,12 @@ export class VipBooth {
         }
         if (this.ledTexture) {
             this.ledTexture.needsUpdate = true;
+        }
+    }
+
+    nextCar() {
+        if (this.carManager) {
+            this.carManager.nextCar();
         }
     }
 

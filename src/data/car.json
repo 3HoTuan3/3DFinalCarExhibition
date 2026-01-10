@@ -1,0 +1,40 @@
+{
+    "Toyota": [
+        {
+            "Name": "Toyota MR2 W20",
+            "model": "./assets/models/Toyota/1996_toyota_mr2_w20.glb",
+            "scale": 2.0, 
+            "Price": "60000$",
+            "engine": "2.0L I4, gasoline",
+            "transmission": "5-Speed Manual",
+            "power": "200 hp",
+            "seating_capacity": 2,
+            "year": 1996,
+            "global_information": "..."
+        },
+        {
+            "Name": "Toyota Hilux Double Cab",
+            "model": "./assets/models/Toyota/2005_toyota_hilux_double_cab.glb",
+            "scale": 0.015, 
+            "Price": "80000$",
+            "engine": "3.0L I6, hybrid",
+            "transmission": "6-Speed Manual",
+            "power": "335 hp",
+            "seating_capacity": 5,
+            "year": 2020,
+            "global_information": "..."
+        },
+        {
+            "Name": "Toyota Century Royal",
+            "model": "./assets/models/Toyota/2006_toyota_century_royal.glb",
+            "scale": 0.01, 
+            "Price": "60000$",
+            "engine": "5.0L V12, gasoline",
+            "transmission": "6-Speed Automatic",
+            "power": "423 hp",
+            "seating_capacity": 5,
+            "year": 2006,
+            "global_information": "..."
+        }
+    ]
+}

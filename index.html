@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Car Exhibition</title>
+    <link rel="stylesheet" href="./style.css">
     <style>
-        body { margin: 0; overflow: hidden; }
-        canvas { display: block; }
-        
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+
         /* TÂM NGẮM */
         #crosshair {
             position: absolute;
@@ -29,16 +37,31 @@
             width: 100%;
             text-align: center;
             color: white;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             padding: 10px;
             font-family: sans-serif;
             pointer-events: none;
         }
     </style>
 </head>
+
 <body>
     <div id="crosshair"></div>
     <div id="instructions">CLICK VÀO MÀN HÌNH ĐỂ DI CHUYỂN (WASD + CHUỘT)</div>
+
+    <div id="car-info-panel">
+        <button id="close-btn">×</button>
+        <h1 id="info-name">Car Name</h1>
+        <div class="info-grid">
+            <p><strong>Price:</strong> <span id="info-price">---</span></p>
+            <p><strong>Engine:</strong> <span id="info-engine">---</span></p>
+            <p><strong>Power:</strong> <span id="info-power">---</span></p>
+            <p><strong>0-100km/h:</strong> <span id="info-accel">---</span></p>
+        </div>
+        <p id="info-desc" class="desc">Description goes here...</p>
+    </div>
+
     <script type="module" src="./src/main.js"></script>
 </body>
+
 </html>
