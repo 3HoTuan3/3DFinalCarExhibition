@@ -56,14 +56,14 @@ export class CarManager {
             const gltf = await loadGLTF(carData.model);
             const model = gltf.scene;
             const finalScale = carData.scale || 1.0;
+            const yOffset = (carData.yOffset !== undefined) ? carData.yOffset : 0.4;
 
             model.scale.set(0, 0, 0);
-            model.position.set(0, 0, 0);
+            model.position.set(0, yOffset, 0);
 
-            // Gán vào root của model xe
             model.userData = {
                 isCar: true,
-                info: carData // Lưu toàn bộ thông tin json vào đây
+                info: carData
             };
 
             model.traverse((child) => {
