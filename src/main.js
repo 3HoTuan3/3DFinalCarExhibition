@@ -50,6 +50,7 @@ const closeBtn = document.getElementById('close-btn');
 // Hiển thị thông tin
 function showCarInfo(carData) {
     document.getElementById('info-name').innerText = carData.Name;
+    document.getElementById('info-type').innerText = carData.vehicle_type;
     document.getElementById('info-price').innerText = carData.Price;
     document.getElementById('info-engine').innerText = carData.engine;
     document.getElementById('info-power').innerText = carData.power;

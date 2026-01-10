@@ -1,6 +1,19 @@
 {
     "Toyota": [
         {
+            "Name": "Toyota Celica Turbo IMSA GTO",
+            "vehicle_type": "Race Car",
+            "model": "./assets/models/Toyota/toyota_celica_turbo_imsa_gto.glb",
+            "scale": 0.01,
+            "Price": "N/A (Race Car)",
+            "engine": "2.1L Turbo Inline-4",
+            "transmission": "5-Speed Sequential",
+            "power": "450-600 hp",
+            "seating_capacity": 1,
+            "year": 1987,
+            "global_information": "The Toyota Celica Turbo IMSA GTO is a legendary race car from the IMSA GTO series, developed by All-American Racers. With a powerful turbocharged engine and aggressive aero, it dominated the championship in the late 1980s with raw speed and handling."
+        },
+        {
             "Name": "Toyota MR2 W20",
             "vehicle_type": "Sports Car",
             "model": "./assets/models/Toyota/1996_toyota_mr2_w20.glb",
@@ -95,7 +108,7 @@
             "Name": "Toyota Auris Wagon",
             "vehicle_type": "Sports Car",
             "model": "./assets/models/Toyota/toyota_auris_wagon.glb",
-            "scale": 0.5,
+            "scale": 0.2,
             "Price": "40000$",
             "engine": "1.8L VVT-i  , Hybrid",
             "transmission": "8-Speed Automatic",
@@ -116,19 +129,6 @@
             "seating_capacity": 5,
             "year": 2020,
             "global_information": "The Toyota Camry is a reliable midsize sedan renowned for its comfort, fuel efficiency, and hybrid technology. It features a 2.5L hybrid engine delivering smooth performance and excellent economy, making it a top choice for families and daily commuters."
-        },
-        {
-            "Name": "Toyota Celica Turbo IMSA GTO",
-            "vehicle_type": "Race Car",
-            "model": "./assets/models/Toyota/toyota_celica_turbo_imsa_gto.glb",
-            "scale": 1.0,
-            "Price": "N/A (Race Car)",
-            "engine": "2.1L Turbo Inline-4",
-            "transmission": "5-Speed Sequential",
-            "power": "450-600 hp",
-            "seating_capacity": 1,
-            "year": 1987,
-            "global_information": "The Toyota Celica Turbo IMSA GTO is a legendary race car from the IMSA GTO series, developed by All-American Racers. With a powerful turbocharged engine and aggressive aero, it dominated the championship in the late 1980s with raw speed and handling."
         },
         {
             "Name": "Toyota Corolla Levin AE92 GT Apex",
@@ -298,6 +298,21 @@
             "seating_capacity": 7,
             "year": 1982,
             "global_information": "The Toyota Van 1982 is a classic rear-wheel-drive minivan from the 80s, offering practical space and reliability for families. It was Toyota's early entry into the people-mover market with simple, durable design."
+        }
+    ],
+    "Porsche": [
+        {
+            "Name": "Porsche 911 GT2 RS 993",
+            "vehicle_type": "Sports Car",
+            "model": "./assets/models/Porsche/porsche_911_gt2_993.glb",
+            "scale": 1.0,
+            "Price": "200000$",
+            "engine": "4.0L Flat-6",
+            "transmission": "7-Speed PDK Automatic",
+            "power": "520 hp",
+            "seating_capacity": 2,
+            "year": 2022,
+            "global_information": "The Porsche 911 GT2 RS 993 is a high-performance sports car designed for track enthusiasts. It features a naturally aspirated 4.0L flat-six engine producing 520 hp, paired with a quick-shifting 7-speed PDK transmission. The GT2 RS is renowned for its exceptional handling, aerodynamic design"
         }
     ]
 }
