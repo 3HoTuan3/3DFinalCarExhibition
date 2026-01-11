@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { loadGLTF } from '../utils/loadGLTF.js';
+import { CarManager } from './carManager.js';
 
 export class Booth {
     constructor(scene, position = { x: 0, y: 0, z: 0 }, config = {}) {
@@ -19,6 +20,7 @@ export class Booth {
 
         this.logoImg = new Image();
         this.logoImg.src = this.logoUrl;
+        this.carManager = null;
 
         this.init();
     }
@@ -90,7 +92,30 @@ export class Booth {
         this.mesh.add(spotLight);
         this.mesh.add(spotLight.target);
 
+        // --- 6. Load xe ---
+        try {
+            const response = await fetch('./src/data/car.json');
+            const data = await response.json();
+            // Lấy danh sách xe dựa theo tên hãng
+            const carList = data[this.brandName]; 
+            if (carList && carList.length > 0) {
+                // Tạo CarManager
+                this.carManager = new CarManager(this.scene, this.mesh, carList);
+                this.carManager.nextCar();
+            } else {
+                console.warn(`Không tìm thấy xe cho hãng: ${this.brandName}`);
+            }
+        } catch (error) {
+            console.error("Lỗi load car.json:", error);
+        }
+
         this.scene.add(this.mesh);
+    }
+
+    nextCar() {
+        if (this.carManager) {
+            this.carManager.nextCar();
+        }
     }
 
     createLedTexture() {

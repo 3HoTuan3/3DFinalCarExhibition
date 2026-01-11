@@ -15,9 +15,9 @@ setupLights(scene);
 // 2. SETUP LAYOUT
 const booths = [];
 const boothData = [
-    { x: -12, z: -12, name: "Ford", logo: './assets/textures/ford.svg', text: "FORD - BUILT FORD TOUGH" },
+    { x: -12, z: -12, name: "FORD", logo: './assets/textures/ford.svg', text: "FORD - BUILT FORD TOUGH" },
     { x: 12, z: -12, name: "BMW", logo: './assets/textures/BMW.svg', text: "BMW - THE ULTIMATE DRIVING MACHINE" },
-    { x: 12, z: 12, name: "Lexus", logo: './assets/textures/Lexus.svg', text: "LEXUS - EXPERIENCE AMAZING" },
+    { x: 12, z: 12, name: "lexus", logo: './assets/textures/Lexus.svg', text: "LEXUS - EXPERIENCE AMAZING" },
     { x: -12, z: 12, name: "Porsche", logo: './assets/textures/Porsche.svg', text: "PORSCHE - THERE IS NO SUBSTITUTE" }
 ];
 
@@ -41,7 +41,7 @@ const { controls, updateMovement } = setupControls(camera, document.body);
 
 // --- RAYCASTER + CENTER ---
 const raycaster = new THREE.Raycaster();
-const center = new THREE.Vector2(0, 0); // tâm màn hình
+const center = new THREE.Vector2(0, 0);
 
 // --- QUẢN LÝ UI INFO PANEL ---
 const infoPanel = document.getElementById('car-info-panel');
@@ -90,25 +90,39 @@ window.addEventListener('click', () => {
     if (intersects.length > 0) {
         let target = intersects[0].object;
 
-        // TRƯỜNG HỢP 1: click để đổi xe
-        let pCheck = target;
-        while (pCheck.parent && !pCheck.userData.isClickable) {
-            pCheck = pCheck.parent;
+        // --- TRƯỜNG HỢP 1: click đổi xe ---
+        let clickableObj = target;
+        while (clickableObj.parent && !clickableObj.userData.isClickable) {
+            clickableObj = clickableObj.parent;
         }
-
-        // gọi vipBooth nếu click thuộc cây trụ của vipBooth
-        if ((pCheck.userData && pCheck.userData.isClickable && pCheck.userData.type === 'pillar') ||
-            (vipBooth && vipBooth.pillarObj && isDescendant(target, vipBooth.pillarObj.mesh))) {
+        if (clickableObj.userData && clickableObj.userData.isClickable && clickableObj.userData.type === 'pillar') {
             console.log("Clicked Pillar!");
-            if (pCheck.material && pCheck.material.emissive) {
-                const oldHex = pCheck.material.emissive.getHex();
-                pCheck.material.emissive.setHex(0xffff00);
+            // Hiệu ứng nháy màu
+            if (clickableObj.material && clickableObj.material.emissive) {
+                const oldHex = clickableObj.material.emissive.getHex();
+                clickableObj.material.emissive.setHex(0xffff00);
                 setTimeout(() => {
-                    if (pCheck.material) pCheck.material.emissive.setHex(oldHex);
+                    if (clickableObj.material) clickableObj.material.emissive.setHex(oldHex);
                 }, 200);
             }
-            if (vipBooth && vipBooth.nextCar) vipBooth.nextCar();
-            return;
+
+            // --- PHÂN LOẠI ---
+            // A. Kiểm tra VIP BOOTH
+            if (vipBooth && vipBooth.pillarObj && isDescendant(target, vipBooth.pillarObj.mesh)) {
+                console.log("-> Vip Booth Next Car");
+                vipBooth.nextCar();
+                return;
+            }
+            // B. Kiểm tra CÁC BOOTH THƯỜNG
+            let found = false;
+            booths.forEach(item => {
+                if (isDescendant(target, item.pillar.mesh)) {
+                    console.log(`-> ${item.data.name} Booth Next Car`);
+                    item.booth.nextCar();
+                    found = true;
+                }
+            });
+            if (found) return;
         }
 
         // TRƯỜNG HỢP 2: click vào xe để hiện info
@@ -118,7 +132,6 @@ window.addEventListener('click', () => {
             cCheck = cCheck.parent;
             depth++;
         }
-
         if (cCheck.userData && cCheck.userData.isCar && cCheck.userData.info) {
             console.log("Clicked Car:", cCheck.userData.info.Name);
             showCarInfo(cCheck.userData.info);

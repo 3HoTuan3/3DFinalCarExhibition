@@ -304,15 +304,60 @@
         {
             "Name": "Porsche 911 GT2 RS 993",
             "vehicle_type": "Sports Car",
-            "model": "./assets/models/Porsche/porsche_911_gt2_993.glb",
-            "scale": 1.0,
+            "model": "./assets/models/Porsche/1995_porsche_911_gt2_993.glb",
+            "scale": 10.0,
             "Price": "200000$",
             "engine": "4.0L Flat-6",
             "transmission": "7-Speed PDK Automatic",
             "power": "520 hp",
             "seating_capacity": 2,
-            "year": 2022,
+            "year": 1995,
             "global_information": "The Porsche 911 GT2 RS 993 is a high-performance sports car designed for track enthusiasts. It features a naturally aspirated 4.0L flat-six engine producing 520 hp, paired with a quick-shifting 7-speed PDK transmission. The GT2 RS is renowned for its exceptional handling, aerodynamic design"
+        }
+    ],
+    "BMW": [
+        {
+            "Name": "BMW M4 F82 GT4",
+            "vehicle_type": "Sports Car",
+            "model": "./assets/models/BMW/2018_bmw_m4_f82_gt4.glb",
+            "scale": 10.0,
+            "Price": "70000$",
+            "engine": "2.3L Inline-4",
+            "transmission": "5-Speed Manual",
+            "power": "192 hp",
+            "seating_capacity": 4,
+            "year": 2018,
+            "global_information": "The BMW M4 F82 GT4 is a high-performance sports car known for its sharp handling and performance. It features a high-revving 2.3L inline-four engine producing 192 hp, paired with a 5-speed manual transmission. The F82 M4 is celebrated for its motorsport heritage and timeless design."
+        }
+    ],
+    "FORD": [
+        {
+            "Name": "Ford Shelby GR-1 2005",
+            "vehicle_type": "Muscle Car",
+            "model": "./assets/models/Ford/2005_ford_shelby_gr1.glb",
+            "scale": 10.0,
+            "Price": "36000$",
+            "engine": "5.0L V8",
+            "transmission": "6-Speed Manual",
+            "power": "450 hp",
+            "seating_capacity": 4,
+            "year": 2005,
+            "global_information": "The Ford Shelby GR-1 2005 is a powerful muscle car known for its aggressive styling and thrilling performance. It features a robust 5.0L V8 engine producing 450 hp, paired with a 6-speed manual transmission. The Shelby GR-1 offers an exhilarating driving experience with its iconic design and modern technology."
+        }
+    ],
+    "lexus": [
+        {
+            "Name": "Lexus LC 500 Artisan Spirits Black Label GT 2017",
+            "vehicle_type": "Luxury Sports Car",
+            "model": "./assets/models/Lexus/2017_lexus_lc_500_artisan_spirits_black_label_gt.glb",
+            "scale": 10.0,
+            "Price": "92000$",
+            "engine": "5.0L V8",
+            "transmission": "10-Speed Automatic",
+            "power": "471 hp",
+            "seating_capacity": 4,
+            "year": 2017,
+            "global_information": "The Lexus LC 500 Artisan Spirits Black Label GT 2017 is a luxurious sports car that combines stunning design with powerful performance. It features a naturally aspirated 5.0L V8 engine producing 471 hp, paired with a smooth 10-speed automatic transmission. The LC 500 offers a refined driving experience with its advanced technology and elegant interior."
         }
     ]
 }
