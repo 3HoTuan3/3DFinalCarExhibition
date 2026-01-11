@@ -63,7 +63,6 @@ export class Booth {
             emissiveMap: this.ledTexture,
             emissiveIntensity: 0.8
         });
-        // Đặt màn hình nằm đè lên mặt trước của khung
         const screen = new THREE.Mesh(screenGeo, screenMat);
         screen.position.set(0, 3, -2.74);
         this.mesh.add(screen);

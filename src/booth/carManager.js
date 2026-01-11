@@ -60,6 +60,8 @@ export class CarManager {
 
             model.scale.set(0, 0, 0);
             model.position.set(0, yOffset, 0);
+            const rotationY = (carData.rotationY !== undefined) ? carData.rotationY : -Math.PI / 2;
+            model.rotation.y = rotationY;
 
             model.userData = {
                 isCar: true,
@@ -76,12 +78,12 @@ export class CarManager {
             });
             this.parent.add(model);
             this.currentModel = model;
-            gsap.to(model.scale, { 
-                x: finalScale, 
-                y: finalScale, 
-                z: finalScale, 
-                duration: 0.8, 
-                ease: "back.out(1.7)" 
+            gsap.to(model.scale, {
+                x: finalScale,
+                y: finalScale,
+                z: finalScale,
+                duration: 0.8,
+                ease: "back.out(1.7)"
             });
 
         } catch (error) {
