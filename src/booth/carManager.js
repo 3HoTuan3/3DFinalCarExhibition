@@ -56,10 +56,15 @@ export class CarManager {
             const gltf = await loadGLTF(carData.model);
             const model = gltf.scene;
             const finalScale = carData.scale || 1.0;
-            const yOffset = (carData.yOffset !== undefined) ? carData.yOffset : 0.4;
+            // Set offset và rotation
+            const offset = carData.offset || {};
+            const xOffset = (offset.x !== undefined) ? offset.x : (carData.xOffset !== undefined ? carData.xOffset : 0);
+            const yOffset = (offset.y !== undefined) ? offset.y : (carData.yOffset !== undefined ? carData.yOffset : 0.4);
+            const zOffset = (offset.z !== undefined) ? offset.z : (carData.zOffset !== undefined ? carData.zOffset : 0);
 
             model.scale.set(0, 0, 0);
-            model.position.set(0, yOffset, 0);
+            model.position.set(xOffset, yOffset, zOffset);
+
             const rotationY = (carData.rotationY !== undefined) ? carData.rotationY : -Math.PI / 2;
             model.rotation.y = rotationY;
 

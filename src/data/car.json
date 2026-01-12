@@ -302,6 +302,25 @@
     ],
     "Porsche": [
         {
+            "Name": "2023 Porsche 911 GT3 RS",
+            "vehicle_type": "Track-Focused Sports Car",
+            "model": "./assets/models/Porsche/2023_porsche_911_gt3_rs.glb",
+            "scale": 0.3,
+            "Price": "223800$",
+            "engine": "4.0L Naturally Aspirated Flat-6",
+            "transmission": "7-Speed PDK",
+            "power": "518 hp",
+            "seating_capacity": 2,
+            "year": 2023,
+            "offset": {
+                "x": 3.0,
+                "y": 0.4,
+                "z": -3.5
+            },
+            "rotationY": 1.5,
+            "global_information": "The 2023 Porsche 911 GT3 RS is an aerodynamic masterpiece with extreme downforce and a high-revving engine. Designed for the track, it offers razor-sharp precision and record-breaking lap times."
+        },
+        {
             "Name": "Porsche 911 GT2 RS 993",
             "vehicle_type": "Sports Car",
             "model": "./assets/models/Porsche/1995_porsche_911_gt2_993.glb",
@@ -508,19 +527,6 @@
             "seating_capacity": 5,
             "year": 2022,
             "global_information": "The 2022 Porsche Cayenne Turbo GT is the fastest SUV ever, with track-tuned suspension, massive power, and aggressive aero for unparalleled performance in a luxury package."
-        },
-        {
-            "Name": "2023 Porsche 911 GT3 RS",
-            "vehicle_type": "Track-Focused Sports Car",
-            "model": "./assets/models/Porsche/2023_porsche_911_gt3_rs.glb",
-            "scale": 100.0,
-            "Price": "223800$",
-            "engine": "4.0L Naturally Aspirated Flat-6",
-            "transmission": "7-Speed PDK",
-            "power": "518 hp",
-            "seating_capacity": 2,
-            "year": 2023,
-            "global_information": "The 2023 Porsche 911 GT3 RS is an aerodynamic masterpiece with extreme downforce and a high-revving engine. Designed for the track, it offers razor-sharp precision and record-breaking lap times."
         },
         {
             "Name": "2025 Porsche Taycan Turbo GT Weissach",
