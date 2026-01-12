@@ -320,6 +320,49 @@
             "rotationY": 1.5,
             "global_information": "The 2023 Porsche 911 GT3 RS is an aerodynamic masterpiece with extreme downforce and a high-revving engine. Designed for the track, it offers razor-sharp precision and record-breaking lap times."
         },
+        {   
+            "Name": "2010 Porsche Panamera Turbo",
+            "vehicle_type": "Luxury Sedan",
+            "model": "./assets/models/Porsche/2010_porsche_panamera_turbo.glb",
+            "scale": 0.2,
+            "Price": "132600$",
+            "engine": "4.8L Twin-Turbo V8",
+            "transmission": "7-Speed PDK Dual-Clutch",
+            "power": "500 hp",
+            "seating_capacity": 4,
+            "year": 2010,
+            "offset": {"y": 1.1},
+            "rotationY": 1.5,
+            "global_information": "The 2010 Porsche Panamera Turbo combines grand touring luxury with blistering performance. Its twin-turbo V8 and all-wheel drive deliver supercar acceleration in a practical four-door package, redefining what a high-performance sedan can be."
+        },
+        {
+            "Name": "2019 Porsche Macan Turbo",
+            "vehicle_type": "Performance SUV",
+            "model": "./assets/models/Porsche/2019_porsche_macan_turbo.glb",
+            "scale": 100.0,
+            "Price": "85000$",
+            "engine": "2.9L Twin-Turbo V6",
+            "transmission": "7-Speed PDK",
+            "power": "440 hp",
+            "seating_capacity": 5,
+            "year": 2019,
+            "offset": {"y": 0.0},
+            "global_information": "The 2019 Porsche Macan Turbo is a compact luxury SUV with supercar-like acceleration and sharp handling. It combines practicality with thrilling dynamics for an exhilarating daily driver."
+        },
+        {
+            "Name": "Porsche 911 Carrera 4S",
+            "vehicle_type": "Sports Car",
+            "model": "./assets/models/Porsche/porsche_911_carrera_4s.glb",
+            "scale": 1.0,
+            "Price": "130000$",
+            "engine": "3.0L Twin-Turbo Flat-6",
+            "transmission": "8-Speed PDK / Manual",
+            "power": "443 hp",
+            "seating_capacity": 4,
+            "year": 2025,
+            "offset": {"y": 1.1},
+            "global_information": "The Porsche 911 Carrera 4S combines all-wheel drive grip with turbocharged performance and timeless design, offering balanced handling and everyday usability in Porsche's flagship sports car."
+        },
         {
             "Name": "Porsche 911 GT2 RS 993",
             "vehicle_type": "Sports Car",
@@ -345,19 +388,6 @@
             "seating_capacity": 2,
             "year": 2004,
             "global_information": "The 2004 Porsche Carrera GT is a legendary mid-engine supercar with a screaming naturally aspirated V10 engine. Derived from Le Mans tech, it offers raw, analog driving thrills with exceptional handling and iconic design that remains one of the greatest sports cars ever built."
-        },
-        {   
-            "Name": "2010 Porsche Panamera Turbo",
-            "vehicle_type": "Luxury Sedan",
-            "model": "./assets/models/Porsche/2010_porsche_panamera_turbo.glb",
-            "scale": 0.1,
-            "Price": "132600$",
-            "engine": "4.8L Twin-Turbo V8",
-            "transmission": "7-Speed PDK Dual-Clutch",
-            "power": "500 hp",
-            "seating_capacity": 4,
-            "year": 2010,
-            "global_information": "The 2010 Porsche Panamera Turbo combines grand touring luxury with blistering performance. Its twin-turbo V8 and all-wheel drive deliver supercar acceleration in a practical four-door package, redefining what a high-performance sedan can be."
         },
         {
             "Name": "2015 Porsche Cayman GT4",
@@ -436,19 +466,6 @@
             "seating_capacity": 1,
             "year": 2019,
             "global_information": "The 2019 Porsche GT2 RS Clubsport is an extreme track-only machine with massive power and aero. Built for circuit dominance, it pushes the limits of Porsche engineering with raw, unfiltered performance."
-        },
-        {
-            "Name": "2019 Porsche Macan Turbo",
-            "vehicle_type": "Performance SUV",
-            "model": "./assets/models/Porsche/2019_porsche_macan_turbo.glb",
-            "scale": 100.0,
-            "Price": "85000$",
-            "engine": "2.9L Twin-Turbo V6",
-            "transmission": "7-Speed PDK",
-            "power": "440 hp",
-            "seating_capacity": 5,
-            "year": 2019,
-            "global_information": "The 2019 Porsche Macan Turbo is a compact luxury SUV with supercar-like acceleration and sharp handling. It combines practicality with thrilling dynamics for an exhilarating daily driver."
         },
         {
             "Name": "2020 Porsche 718 Cayman GT4",
@@ -553,19 +570,6 @@
             "seating_capacity": 4,
             "year": 1975,
             "global_information": "The 1975 Porsche 911 930 Turbo pioneered turbocharging in production sports cars. With its whale-tail spoiler and raw turbo power, it's an iconic pioneer of high-performance driving."
-        },
-        {
-            "Name": "Porsche 911 Carrera 4S",
-            "vehicle_type": "Sports Car",
-            "model": "./assets/models/Porsche/porsche_911_carrera_4s.glb",
-            "scale": 1.0,
-            "Price": "130000$",
-            "engine": "3.0L Twin-Turbo Flat-6",
-            "transmission": "8-Speed PDK / Manual",
-            "power": "443 hp",
-            "seating_capacity": 4,
-            "year": 2025,
-            "global_information": "The Porsche 911 Carrera 4S combines all-wheel drive grip with turbocharged performance and timeless design, offering balanced handling and everyday usability in Porsche's flagship sports car."
         },
         {
             "Name": "Porsche Turbo 2",
