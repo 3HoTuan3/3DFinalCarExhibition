@@ -71,9 +71,9 @@ export class VipBooth {
 
         // Dùng ledTexture làm map cho vật liệu
         const screenMat = new THREE.MeshStandardMaterial({
-            map: this.ledTexture, // Gán texture động vào đây
-            emissive: 0xffffff,   // Để nó tự phát sáng trong bóng tối
-            emissiveMap: this.ledTexture, // Phát sáng theo đúng hình vẽ
+            map: this.ledTexture,
+            emissive: 0xffffff,
+            emissiveMap: this.ledTexture,
             emissiveIntensity: 0.8,
             side: THREE.DoubleSide
         });
@@ -142,6 +142,56 @@ export class VipBooth {
             console.error("Lỗi load cars.json:", error);
         }
         this.scene.add(this.mesh);
+
+        // --- 6. trang trí ---
+        
+        // A. Thảm nhung đỏ tròn
+        const textLoader = new THREE.TextureLoader();
+        const carpetTex = textLoader.load('./assets/textures/Carpet_red_Circle.png'); 
+        carpetTex.colorSpace = THREE.SRGBColorSpace;
+
+        const carpetGeo = new THREE.CircleGeometry(this.radius, 64);
+        const carpetMat = new THREE.MeshStandardMaterial({ 
+            map: carpetTex,
+            color: 0xffffff,
+            roughness: 1.0,
+            side: THREE.DoubleSide
+        });
+        const redCarpet = new THREE.Mesh(carpetGeo, carpetMat);
+        redCarpet.rotation.x = -Math.PI / 2;
+        redCarpet.position.y = 0.41; 
+        redCarpet.receiveShadow = true;
+        this.mesh.add(redCarpet); 
+
+        // B. hàng rào
+        const numPosts = 16; 
+        const fenceRadius = this.radius; 
+        const goldMat = new THREE.MeshStandardMaterial({ 
+            color: 0xFFD700, 
+            metalness: 1.0, 
+            roughness: 0.1 
+        });
+        const postGeo = new THREE.CylinderGeometry(0.05, 0.08, 0.6, 16);
+
+        for (let i = 0; i < numPosts; i++) {
+            const angle = (i / numPosts) * Math.PI * 2;
+            const x = Math.sin(angle) * fenceRadius;
+            const z = Math.cos(angle) * fenceRadius;
+            const post = new THREE.Mesh(postGeo, goldMat);
+
+            // Vị trí cột
+            post.position.set(x, 0.7, z); 
+            post.castShadow = true;
+            this.mesh.add(post);
+        }
+
+        // C. Dây rào nối liền mạch
+        const ropeGeo = new THREE.TorusGeometry(fenceRadius, 0.04, 16, 100, Math.PI * 2); 
+        const ropeMat = new THREE.MeshStandardMaterial({ color: 0xaa0000 });
+        const rope = new THREE.Mesh(ropeGeo, ropeMat);
+        rope.rotation.x = -Math.PI / 2; 
+        rope.position.y = 0.9; 
+        this.mesh.add(rope);
     }
 
     // --- TẠO TEXTURE ĐỘNG ---
