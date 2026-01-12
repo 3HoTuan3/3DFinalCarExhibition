@@ -6,6 +6,7 @@ import { setupControls } from './scene/setupControls.js';
 import { Booth } from './booth/booth.js';
 import { Pillar } from './booth/pillar.js';
 import { VipBooth } from './booth/VipBooth.js';
+import { Entrance } from './scene/entrance.js';
 
 // 1. INIT SCENE
 const scene = setupScene();
@@ -38,6 +39,8 @@ document.body.appendChild(renderer.domElement);
 
 // 3. CONTROLS
 const { controls, updateMovement } = setupControls(camera, document.body);
+// Pass controls to entrance for teleporting
+const entrance = new Entrance(scene, controls);
 
 // --- RAYCASTER + CENTER ---
 const raycaster = new THREE.Raycaster();
@@ -89,6 +92,20 @@ window.addEventListener('click', () => {
 
     if (intersects.length > 0) {
         let target = intersects[0].object;
+
+        // --- TRƯỜNG HỢP ĐẶC BIỆT: CLICK CỬA RA VÀO ---
+        let doorCheck = target;
+        while (doorCheck.parent && (!doorCheck.userData || !doorCheck.userData.isClickable)) {
+            doorCheck = doorCheck.parent;
+            if (!doorCheck) break;
+        }
+
+        // Click trúng cửa
+        if (doorCheck && doorCheck.userData && doorCheck.userData.type === 'door') {
+            console.log("Clicked Door!");
+            entrance.handleClick();
+            return;
+        }
 
         // --- TRƯỜNG HỢP 1: click đổi xe ---
         let clickableObj = target;
