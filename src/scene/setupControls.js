@@ -54,17 +54,50 @@ export function setupControls(camera, domElement) {
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('keyup', onKeyUp);
 
-    // delta: thời gian giữa 2 frame (để di chuyển mượt)
-    const updateMovement = (delta) => {
+    // --- COLLISION (Bounding Boundary) ---
+    const updateMovement = (delta, doorIsOpen = false) => {
         if (!controls.isLocked) return;
 
-        const speed = 10.0 * delta; // Tốc độ di chuyển
+        const speed = 10.0 * delta;
+        const velocity = new THREE.Vector3();
 
-        // Lấy hướng camera đang nhìn
-        if (moveState.forward) controls.moveForward(speed);
-        if (moveState.backward) controls.moveForward(-speed);
-        if (moveState.right) controls.moveRight(speed);
-        if (moveState.left) controls.moveRight(-speed);
+        // Tính hướng di chuyển local
+        if (moveState.forward) velocity.z -= 1;
+        if (moveState.backward) velocity.z += 1;
+        if (moveState.left) velocity.x -= 1;
+        if (moveState.right) velocity.x += 1;
+
+        // Lưu vị trí trước khi di chuyển để tránh "bịt" người đang ở ngoài khi cửa đóng
+        const pos = camera.position;
+        const prevZ = pos.z;
+
+        if (velocity.lengthSq() > 0) {
+            velocity.normalize().multiplyScalar(speed);
+            // moveRight/moveForward làm việc theo hệ control
+            controls.moveRight(velocity.x);
+            controls.moveForward(-velocity.z);
+        }
+
+        // COLLISION: giới hạn toạ độ trong map (map ~40x40, biên = 20m). Giữ cách tường ~1m => limit = 19
+        const limit = 19;
+
+        // Giới hạn X
+        if (pos.x < -limit) pos.x = -limit;
+        if (pos.x > limit) pos.x = limit;
+
+        // Giới hạn Z với xử lý cửa trước (Z âm)
+        if (doorIsOpen) {
+            // Nếu cửa mở: cho phép đi ra phía trước ngoài sân tới -40
+            if (pos.z < -40) pos.z = -40;
+            if (pos.z > limit) pos.z = limit;
+        } else {
+            // Nếu cửa đóng:
+            // - Nếu người đang ở ngoài (prevZ < -limit), không ép họ dịch chuyển vào trong khi chỉ click để khóa chuột.
+            // - Nếu người ở trong và cố gắng di chuyển qua biên ra ngoài, chặn ở -limit.
+            if (prevZ >= -limit && pos.z < -limit) pos.z = -limit;
+            if (pos.z > limit) pos.z = limit;
+            // Nếu prevZ < -limit thì giữ pos.z như hiện tại (người vẫn ở ngoài)
+        }
     };
 
     return { controls, updateMovement };

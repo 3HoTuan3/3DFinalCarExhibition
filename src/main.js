@@ -162,7 +162,11 @@ const clock = new THREE.Clock();
 function animate() {
     requestAnimationFrame(animate);
     const delta = clock.getDelta();
-    updateMovement(delta);
+
+    // Truyền trạng thái cửa vào updateMovement
+    const isDoorOpen = entrance ? entrance.isOpen : false;
+    updateMovement(delta, isDoorOpen);
+
     if (vipBooth) vipBooth.update(delta);
 
     booths.forEach(item => {
