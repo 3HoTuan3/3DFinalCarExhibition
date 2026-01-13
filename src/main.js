@@ -38,7 +38,7 @@ const boothData = [
     {
         x: 12, z: 12, name: "lexus", logo: './assets/textures/Lexus.svg', text: "LEXUS - EXPERIENCE AMAZING",
         assistant: {
-            model: './assets/models/Assistant/REPO2.glb',
+            model: './assets/models/Assistant/REPO1.glb',
             animIdle: 'Idle',
             animActive: 'Clapping',
             scale: 1 

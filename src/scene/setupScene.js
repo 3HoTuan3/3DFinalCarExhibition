@@ -57,13 +57,13 @@ export function setupScene() {
 
     // --- 3. TRẦN NHÀ ---
     const ceilingGeo = new THREE.PlaneGeometry(40, 40);
-    const ceilingMat = new THREE.MeshStandardMaterial({ 
+    const ceilingMat = new THREE.MeshStandardMaterial({
         color: 0x222222,
-        side: THREE.DoubleSide 
+        side: THREE.DoubleSide
     });
     const ceiling = new THREE.Mesh(ceilingGeo, ceilingMat);
-    ceiling.rotation.x = Math.PI / 2; 
-    ceiling.position.y = wallHeight; 
+    ceiling.rotation.x = Math.PI / 2;
+    ceiling.position.y = wallHeight;
     scene.add(ceiling);
 
     // --- 4. HỆ THỐNG ĐÈN TRẦN ---
@@ -72,7 +72,7 @@ export function setupScene() {
         { x: -12, z: -12 },
         { x: 12, z: -12 },
         { x: 12, z: 12 },
-        { x: -12, z: 12 } 
+        { x: -12, z: 12 }
     ];
 
     lightTargets.forEach(pos => {
@@ -80,28 +80,28 @@ export function setupScene() {
         const fixtureGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 32);
         const fixtureMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
         const fixture = new THREE.Mesh(fixtureGeo, fixtureMat);
-        fixture.position.set(pos.x, wallHeight - 0.1, pos.z); 
+        fixture.position.set(pos.x, wallHeight - 0.1, pos.z);
         scene.add(fixture);
 
         // b) Tạo lõi đèn phát sáng (Emissive)
         const bulbGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.05, 32);
-        const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffffee }); 
+        const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffffee });
         const bulb = new THREE.Mesh(bulbGeo, bulbMat);
-        bulb.position.y = -0.11; 
+        bulb.position.y = -0.11;
         fixture.add(bulb);
 
         // c) Tạo SpotLight chiếu xuống
         const spotLight = new THREE.SpotLight(0xffffff, 50);
         spotLight.position.set(pos.x, wallHeight - 0.5, pos.z);
-        
+
         spotLight.target.position.set(pos.x, 0, pos.z);
-        
+
         // Cấu hình bóng đổ và góc chiếu
-        spotLight.angle = Math.PI / 6;
+        spotLight.angle = Math.PI / 5; // đèn sáng độ rộng: 45 độ
         spotLight.penumbra = 0.5;
         spotLight.distance = 30;
         spotLight.decay = 1;
-        spotLight.castShadow = true; 
+        spotLight.castShadow = true;
 
         // Tối ưu shadow map
         spotLight.shadow.mapSize.width = 1024;
