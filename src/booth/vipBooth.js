@@ -5,8 +5,9 @@ import { CarManager } from './carManager.js';
 import { Assistant } from './assistant.js';
 
 export class VipBooth {
-    constructor(scene, position = { x: 0, y: 0, z: 0 }) {
+    constructor(scene, camera, position = { x: 0, y: 0, z: 0 }) {
         this.scene = scene;
+        this.camera = camera;
         this.position = position;
         this.radius = 6;
 
@@ -17,6 +18,13 @@ export class VipBooth {
         this.textX = 0;
 
         this.assistant = null;
+        this.assistantConfig = {
+            model: './assets/models/Assistant/son_goku.glb',
+            animIdle: '00-IDLE',
+            animActive: '01-OSSU',
+            scale: 1,
+            rotation: Math.PI 
+        };
 
         this.init();
     }
@@ -96,37 +104,37 @@ export class VipBooth {
         const lightRadius = 5.5;
 
         for (let i = 0; i < numLights; i++) {
-            const angle = (i / numLights) * Math.PI * 2 + (Math.PI / 4); 
+            const angle = (i / numLights) * Math.PI * 2 + (Math.PI / 4);
             const x = Math.cos(angle) * lightRadius;
             const z = Math.sin(angle) * lightRadius;
 
             // a) Tạo model vỏ đèn
             const lampBaseGeo = new THREE.CylinderGeometry(0.2, 0.25, 0.4, 16);
-            const lampBaseMat = new THREE.MeshStandardMaterial({ 
-                color: 0x222222, 
+            const lampBaseMat = new THREE.MeshStandardMaterial({
+                color: 0x222222,
                 roughness: 0.5,
                 metalness: 0.8
             });
             const lampBase = new THREE.Mesh(lampBaseGeo, lampBaseMat);
             // Đặt đèn nằm trên sàn
-            lampBase.position.set(x, 0.2, z); 
-            lampBase.lookAt(0, 1, 0); 
+            lampBase.position.set(x, 0.2, z);
+            lampBase.lookAt(0, 1, 0);
             lampBase.rotateX(-Math.PI / 2);
             this.mesh.add(lampBase);
 
             // b) Tạo SpotLight
             // Intensity = 800
-            const spotLight = new THREE.SpotLight(0xffffff, 20); 
+            const spotLight = new THREE.SpotLight(0xffffff, 20);
             // Vị trí nguồn sáng
-            spotLight.position.set(x, 0.5, z); 
+            spotLight.position.set(x, 0.5, z);
             // Target chiếu vào thân xe
-            spotLight.target.position.set(0, 1.2, 0); 
-            
+            spotLight.target.position.set(0, 1.2, 0);
+
             spotLight.angle = Math.PI / 5; // Góc mở khoảng 35-36 độ
             spotLight.penumbra = 0.5;      // Viền mềm
             spotLight.distance = 20;       // Tầm xa
             spotLight.decay = 1;           // Độ suy giảm ánh sáng
-            spotLight.castShadow = false; 
+            spotLight.castShadow = false;
             this.mesh.add(spotLight);
             this.mesh.add(spotLight.target);
         }
@@ -147,14 +155,14 @@ export class VipBooth {
         this.scene.add(this.mesh);
 
         // --- 6. trang trí ---
-        
+
         // A. Thảm nhung đỏ tròn
         const textLoader = new THREE.TextureLoader();
-        const carpetTex = textLoader.load('./assets/textures/Carpet_red_Circle.png'); 
+        const carpetTex = textLoader.load('./assets/textures/Carpet_red_Circle.png');
         carpetTex.colorSpace = THREE.SRGBColorSpace;
 
         const carpetGeo = new THREE.CircleGeometry(this.radius, 64);
-        const carpetMat = new THREE.MeshStandardMaterial({ 
+        const carpetMat = new THREE.MeshStandardMaterial({
             map: carpetTex,
             color: 0xffffff,
             roughness: 1.0,
@@ -162,17 +170,17 @@ export class VipBooth {
         });
         const redCarpet = new THREE.Mesh(carpetGeo, carpetMat);
         redCarpet.rotation.x = -Math.PI / 2;
-        redCarpet.position.y = 0.41; 
+        redCarpet.position.y = 0.41;
         redCarpet.receiveShadow = true;
-        this.mesh.add(redCarpet); 
+        this.mesh.add(redCarpet);
 
         // B. hàng rào
-        const numPosts = 16; 
-        const fenceRadius = this.radius; 
-        const goldMat = new THREE.MeshStandardMaterial({ 
-            color: 0xFFD700, 
-            metalness: 1.0, 
-            roughness: 0.1 
+        const numPosts = 16;
+        const fenceRadius = this.radius;
+        const goldMat = new THREE.MeshStandardMaterial({
+            color: 0xFFD700,
+            metalness: 1.0,
+            roughness: 0.1
         });
         const postGeo = new THREE.CylinderGeometry(0.05, 0.08, 0.6, 16);
 
@@ -183,26 +191,26 @@ export class VipBooth {
             const post = new THREE.Mesh(postGeo, goldMat);
 
             // Vị trí cột
-            post.position.set(x, 0.7, z); 
+            post.position.set(x, 0.7, z);
             post.castShadow = true;
             this.mesh.add(post);
         }
 
         // C. Dây rào nối liền mạch
-        const ropeGeo = new THREE.TorusGeometry(fenceRadius, 0.04, 16, 100, Math.PI * 2); 
+        const ropeGeo = new THREE.TorusGeometry(fenceRadius, 0.04, 16, 100, Math.PI * 2);
         const ropeMat = new THREE.MeshStandardMaterial({ color: 0xaa0000 });
         const rope = new THREE.Mesh(ropeGeo, ropeMat);
-        rope.rotation.x = -Math.PI / 2; 
-        rope.position.y = 0.9; 
+        rope.rotation.x = -Math.PI / 2;
+        rope.position.y = 0.9;
         this.mesh.add(rope);
 
-        // --- 7. Trợ lý ảo ---
-        const assistantPath = './assets/models/Assistant/son_goku.glb';
-        
+        // --- 7. Trợ lý ảo ---        
         this.assistant = new Assistant(
-            this.mesh, 
-            { x: 5.5, y: 0, z: this.radius - 11.5 },
-            assistantPath
+            this.mesh,
+            { x: -6.0, y: 0, z: this.radius - 11.5 },
+            this.assistantConfig.model,
+            this.assistantConfig.scale,
+            this.assistantConfig.rotation // Truyền rotation
         );
     }
 
@@ -286,8 +294,16 @@ export class VipBooth {
         this.drawLedContent();
 
         // Cập nhật trợ lý ảo
-        if (this.assistant) {
+        if (this.assistant && this.assistant.model) {
             this.assistant.update(delta);
+            const assistantWorldPos = new THREE.Vector3();
+            this.assistant.model.getWorldPosition(assistantWorldPos);
+            const dist = this.camera.position.distanceTo(assistantWorldPos);
+            if (dist < 8) {
+                this.assistant.playAnimation(this.assistantConfig.animActive);
+            } else {
+                this.assistant.playAnimation(this.assistantConfig.animIdle);
+            }
         }
     }
 }

@@ -16,21 +16,53 @@ setupLights(scene);
 // 2. SETUP LAYOUT
 const booths = [];
 const boothData = [
-    { x: -12, z: -12, name: "FORD", logo: './assets/textures/ford.svg', text: "FORD - BUILT FORD TOUGH" },
-    { x: 12, z: -12, name: "BMW", logo: './assets/textures/BMW.svg', text: "BMW - THE ULTIMATE DRIVING MACHINE" },
-    { x: 12, z: 12, name: "lexus", logo: './assets/textures/Lexus.svg', text: "LEXUS - EXPERIENCE AMAZING" },
-    { x: -12, z: 12, name: "Porsche", logo: './assets/textures/Porsche.svg', text: "PORSCHE - THERE IS NO SUBSTITUTE" }
+    {
+        x: -12, z: -12, name: "FORD", logo: './assets/textures/ford.svg', text: "FORD - BUILT FORD TOUGH",
+        assistant: {
+            model: './assets/models/Assistant/detective_conan.glb',
+            animIdle: 'Idle',
+            animActive: 'Wave',
+            scale: 1
+        }
+    },
+    {
+        x: 12, z: -12, name: "BMW", logo: './assets/textures/BMW.svg', text: "BMW - THE ULTIMATE DRIVING MACHINE",
+        assistant: {
+            model: './assets/models/Assistant/telannas_fox_shrine_maiden_aov.glb',
+            animIdle: 'Come',
+            animActive: 'idleshow',
+            scale: 1.0 
+        }
+    },
+    {
+        x: 12, z: 12, name: "lexus", logo: './assets/textures/Lexus.svg', text: "LEXUS - EXPERIENCE AMAZING",
+        assistant: {
+            model: './assets/models/Assistant/REPO2.glb',
+            animIdle: 'Idle',
+            animActive: 'Clapping',
+            scale: 1 
+        }
+    },
+    {
+        x: -12, z: 12, name: "Porsche", logo: './assets/textures/Porsche.svg', text: "PORSCHE - THERE IS NO SUBSTITUTE",
+        assistant: {
+            model: './assets/models/Assistant/bleach.glb',
+            animIdle: 'idle',
+            animActive: 'Greeting',
+            scale: 1
+        }
+    }
 ];
 
 boothData.forEach((data) => {
-    const booth = new Booth(scene, { x: data.x, y: 0, z: data.z }, data);
+    const booth = new Booth(scene, camera, { x: data.x, y: 0, z: data.z }, data);
     booth.mesh.lookAt(0, 0, 0);
     const pillar = new Pillar(booth.mesh);
     booths.push({ booth, pillar, data: data });
 });
 
 // --- VIP BOOTH ---
-const vipBooth = new VipBooth(scene, { x: 0, y: 0, z: 0 });
+const vipBooth = new VipBooth(scene, camera, { x: 0, y: 0, z: 0 });
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);

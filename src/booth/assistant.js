@@ -2,15 +2,17 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export class Assistant {
-    constructor(parentGroup, position = { x: 0, y: 0, z: 0 }, modelPath) {
+    constructor(parentGroup, position = { x: 0, y: 0, z: 0 }, modelPath, scale = 1, rotation = 0) {
         this.parent = parentGroup;
         this.position = position;
         this.modelPath = modelPath;
-        
-        this.mixer = null; 
+        this.scale = scale;
+        this.rotation = rotation; // Thêm rotation
+
+        this.mixer = null;
         this.model = null;
         this.actions = {}; // Lưu trữ các hành động: { "Idle": action1, "Wave": action2 }
-        this.activeAction = null; 
+        this.activeAction = null;
 
         this.init();
     }
@@ -22,7 +24,8 @@ export class Assistant {
             (gltf) => {
                 this.model = gltf.scene;
                 this.model.position.set(this.position.x, this.position.y, this.position.z);
-                this.model.scale.set(1, 1, 1);
+                this.model.scale.set(this.scale, this.scale, this.scale); // Sử dụng scale
+                this.model.rotation.y = this.rotation; // Áp dụng rotation
 
                 this.model.traverse((child) => {
                     if (child.isMesh) {
@@ -39,15 +42,15 @@ export class Assistant {
                     // Tạo action cho từng clip và lưu vào object this.actions
                     const action = this.mixer.clipAction(clip);
                     this.actions[clip.name] = action;
-                    
+
                     // In tên ra console file có những animation gì
-                    console.log(`Animation found: "${clip.name}"`); 
+                    console.log(`Animation found: "${clip.name}"`);
                 });
 
                 this.parent.add(this.model);
 
                 // --- CHẠY ANIMATION ---
-                this.playAnimation("Idle"); 
+                this.playAnimation("Idle");
             },
             undefined,
             (error) => {
@@ -58,15 +61,14 @@ export class Assistant {
 
     playAnimation(name) {
         const newAction = this.actions[name] || Object.values(this.actions)[0];
-
         if (!newAction) return;
+        if (this.activeAction === newAction) return;
         if (this.activeAction && this.activeAction !== newAction) {
             this.activeAction.fadeOut(0.5);
         }
         newAction.reset();
-        newAction.fadeIn(0.5); 
+        newAction.fadeIn(0.5);
         newAction.play();
-
         this.activeAction = newAction;
     }
 

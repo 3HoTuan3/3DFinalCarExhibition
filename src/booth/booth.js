@@ -4,8 +4,9 @@ import { CarManager } from './carManager.js';
 import { Assistant } from './assistant.js';
 
 export class Booth {
-    constructor(scene, position = { x: 0, y: 0, z: 0 }, config = {}) {
+    constructor(scene, camera, position = { x: 0, y: 0, z: 0 }, config = {}) {
         this.scene = scene;
+        this.camera = camera;
         this.position = position;
 
         // Các biến cho màn hình LED
@@ -18,6 +19,11 @@ export class Booth {
         this.brandName = config.name || "Brand";
         this.logoUrl = config.logo || './assets/textures/default.png';
         this.marqueeText = config.text || "WELCOME TO CAR EXHIBITION";
+        this.assistantConfig = config.assistant || {
+            model: './assets/models/Assistant/detective_conan.glb',
+            animIdle: 'Idle',
+            animActive: 'Wave'
+        };
 
         this.logoImg = new Image();
         this.logoImg.src = this.logoUrl;
@@ -111,12 +117,10 @@ export class Booth {
         }
 
         // --- 7. Trợ lý ảo ---
-        const assistantPath = './assets/models/Assistant/detective_conan.glb'; 
-        
         this.assistant = new Assistant(
-            this.mesh, // Add vào group booth để nó xoay theo booth
-            { x: 2.5, y: 0, z: 2.5 }, // Vị trí đứng bên trái trụ
-            assistantPath
+            this.mesh,
+            { x: 5.5, y: 0, z: 2.5 }, // Vị trí đứng
+            this.assistantConfig.model
         );
 
         this.scene.add(this.mesh);
@@ -192,8 +196,18 @@ export class Booth {
 
     update(delta) {
         this.drawLedContent();
-        if (this.assistant) {
+
+        if (this.assistant && this.assistant.model) {
             this.assistant.update(delta);
+            const assistantWorldPos = new THREE.Vector3();
+            this.assistant.model.getWorldPosition(assistantWorldPos);
+            const dist = this.camera.position.distanceTo(assistantWorldPos);
+            // Action theo khoảng cách
+            if (dist < 3) {
+                this.assistant.playAnimation(this.assistantConfig.animActive);
+            } else {
+                this.assistant.playAnimation(this.assistantConfig.animIdle);
+            }
         }
     }
 }

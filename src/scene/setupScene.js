@@ -56,8 +56,8 @@ export function setupScene() {
     scene.add(rightWall);
 
     // --- GridHelper để dễ căn vị trí
-    const grid = new THREE.GridHelper(tileSize * tilesX, tileSize * tilesX, 0x000000, 0x555555);
-    scene.add(grid);
+    // const grid = new THREE.GridHelper(tileSize * tilesX, tileSize * tilesX, 0x000000, 0x555555);
+    // scene.add(grid);
 
     return scene;
 }
