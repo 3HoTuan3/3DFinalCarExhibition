@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { loadGLTF } from '../utils/loadGLTF.js';
 import { CarManager } from './carManager.js';
+import { Assistant } from './assistant.js';
 
 export class Booth {
     constructor(scene, position = { x: 0, y: 0, z: 0 }, config = {}) {
@@ -21,6 +22,7 @@ export class Booth {
         this.logoImg = new Image();
         this.logoImg.src = this.logoUrl;
         this.carManager = null;
+        this.assistant = null;
 
         this.init();
     }
@@ -108,6 +110,15 @@ export class Booth {
             console.error("Lỗi load car.json:", error);
         }
 
+        // --- 7. Trợ lý ảo ---
+        const assistantPath = './assets/models/Assistant/detective_conan.glb'; 
+        
+        this.assistant = new Assistant(
+            this.mesh, // Add vào group booth để nó xoay theo booth
+            { x: 2.5, y: 0, z: 2.5 }, // Vị trí đứng bên trái trụ
+            assistantPath
+        );
+
         this.scene.add(this.mesh);
     }
 
@@ -181,5 +192,8 @@ export class Booth {
 
     update(delta) {
         this.drawLedContent();
+        if (this.assistant) {
+            this.assistant.update(delta);
+        }
     }
 }

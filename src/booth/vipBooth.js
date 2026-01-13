@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Pillar } from './pillar.js';
 import { loadGLTF } from '../utils/loadGLTF.js';
 import { CarManager } from './carManager.js';
+import { Assistant } from './assistant.js';
 
 export class VipBooth {
     constructor(scene, position = { x: 0, y: 0, z: 0 }) {
@@ -14,6 +15,8 @@ export class VipBooth {
         this.ledContext = null;
         this.ledTexture = null;
         this.textX = 0;
+
+        this.assistant = null;
 
         this.init();
     }
@@ -192,6 +195,15 @@ export class VipBooth {
         rope.rotation.x = -Math.PI / 2; 
         rope.position.y = 0.9; 
         this.mesh.add(rope);
+
+        // --- 7. Trợ lý ảo ---
+        const assistantPath = './assets/models/Assistant/son_goku.glb';
+        
+        this.assistant = new Assistant(
+            this.mesh, 
+            { x: 5.5, y: 0, z: this.radius - 11.5 },
+            assistantPath
+        );
     }
 
     // --- TẠO TEXTURE ĐỘNG ---
@@ -272,5 +284,10 @@ export class VipBooth {
         }
         // Cập nhật màn hình LED
         this.drawLedContent();
+
+        // Cập nhật trợ lý ảo
+        if (this.assistant) {
+            this.assistant.update(delta);
+        }
     }
 }
