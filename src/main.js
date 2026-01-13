@@ -28,10 +28,10 @@ const boothData = [
     {
         x: 12, z: -12, name: "BMW", logo: './assets/textures/BMW.svg', text: "BMW - THE ULTIMATE DRIVING MACHINE",
         assistant: {
-            model: './assets/models/Assistant/telannas_fox_shrine_maiden_aov.glb',
-            animIdle: 'Come',
-            animActive: 'idleshow',
-            scale: 1.0 
+            model: './assets/models/Assistant/naruto_sage_mode.glb',
+            animIdle: 'idle',
+            animActive: 'hiphop dance',
+            scale: 1.0
         }
     },
     {
@@ -49,7 +49,7 @@ const boothData = [
             model: './assets/models/Assistant/bleach.glb',
             animIdle: 'idle',
             animActive: 'Greeting',
-            scale: 1
+            scale: 2
         }
     }
 ];

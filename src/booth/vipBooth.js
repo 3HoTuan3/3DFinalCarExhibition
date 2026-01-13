@@ -21,9 +21,9 @@ export class VipBooth {
         this.assistantConfig = {
             model: './assets/models/Assistant/son_goku.glb',
             animIdle: '00-IDLE',
-            animActive: '01-OSSU',
-            scale: 1,
-            rotation: Math.PI 
+            animActive: 'NAN',
+            scale: 0.8,
+            rotation: 2.967 // Độ x pi/180 = góc
         };
 
         this.init();
@@ -299,7 +299,7 @@ export class VipBooth {
             const assistantWorldPos = new THREE.Vector3();
             this.assistant.model.getWorldPosition(assistantWorldPos);
             const dist = this.camera.position.distanceTo(assistantWorldPos);
-            if (dist < 8) {
+            if (dist < 3) {
                 this.assistant.playAnimation(this.assistantConfig.animActive);
             } else {
                 this.assistant.playAnimation(this.assistantConfig.animIdle);
