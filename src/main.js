@@ -8,114 +8,202 @@ import { Pillar } from './booth/pillar.js';
 import { VipBooth } from './booth/VipBooth.js';
 import { Entrance } from './scene/entrance.js';
 import { MusicManager } from './utils/musicManager.js';
+import { setupLoadingUI } from './ui/loadingManager.js';
 
-// 1. INIT SCENE
-const scene = setupScene();
-const camera = setupCamera();
-setupLights(scene);
+// --- Biến toàn cục ---
+let scene, camera, renderer, controls, updateMovement;
+let vipBooth, entrance;
+let booths = [];
+let musicManager;
 
-// 2. SETUP LAYOUT
-const booths = [];
-const boothData = [
-    {
-        x: -12, z: -12, name: "FORD", logo: './assets/textures/ford.svg', text: "FORD - BUILT FORD TOUGH",
-        assistant: {
-            model: './assets/models/Assistant/detective_conan.glb',
-            animIdle: 'Idle',
-            animActive: 'Wave',
-            scale: 1
-        }
-    },
-    {
-        x: 12, z: -12, name: "BMW", logo: './assets/textures/BMW.svg', text: "BMW - THE ULTIMATE DRIVING MACHINE",
-        assistant: {
-            model: './assets/models/Assistant/naruto_sage_mode.glb',
-            animIdle: 'idle',
-            animActive: 'hiphop dance',
-            scale: 1.0
-        }
-    },
-    {
-        x: 12, z: 12, name: "lexus", logo: './assets/textures/Lexus.svg', text: "LEXUS - EXPERIENCE AMAZING",
-        assistant: {
-            model: './assets/models/Assistant/REPO1.glb',
-            animIdle: 'Idle',
-            animActive: 'Clapping',
-            scale: 1 
-        }
-    },
-    {
-        x: -12, z: 12, name: "Porsche", logo: './assets/textures/Porsche.svg', text: "PORSCHE - THERE IS NO SUBSTITUTE",
-        assistant: {
-            model: './assets/models/Assistant/bleach.glb',
-            animIdle: 'idle',
-            animActive: 'Greeting',
-            scale: 2
-        }
-    }
-];
-
-boothData.forEach((data) => {
-    const booth = new Booth(scene, camera, { x: data.x, y: 0, z: data.z }, data);
-    booth.mesh.lookAt(0, 0, 0);
-    const pillar = new Pillar(booth.mesh);
-    booths.push({ booth, pillar, data: data });
-});
-
-// --- VIP BOOTH ---
-const vipBooth = new VipBooth(scene, camera, { x: 0, y: 0, z: 0 });
-
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-document.body.appendChild(renderer.domElement);
-
-// 3. CONTROLS
-const { controls, updateMovement } = setupControls(camera, document.body);
-// Pass controls to entrance for teleporting
-const entrance = new Entrance(scene, controls);
-
-// --- RAYCASTER + CENTER ---
+const clock = new THREE.Clock();
 const raycaster = new THREE.Raycaster();
 const center = new THREE.Vector2(0, 0);
 
-// --- QUẢN LÝ UI INFO PANEL ---
 const infoPanel = document.getElementById('car-info-panel');
 const closeBtn = document.getElementById('close-btn');
 
-// Hiển thị thông tin
-function showCarInfo(carData) {
-    document.getElementById('info-name').innerText = carData.Name;
-    document.getElementById('info-type').innerText = carData.vehicle_type;
-    document.getElementById('info-price').innerText = carData.Price;
-    document.getElementById('info-engine').innerText = carData.engine;
-    document.getElementById('info-power').innerText = carData.power;
-    document.getElementById('info-seating').innerText = carData.seating_capacity;
-    document.getElementById('info-year').innerText = carData.year;
-    document.getElementById('info-desc').innerText = carData.global_information || "No description available.";
+// --- 1. KHỞI TẠO GAME ---
+function initGame() {
+    // A. INIT SCENE & CAMERA
+    scene = setupScene();
+    camera = setupCamera();
+    setupLights(scene);
 
-    infoPanel.style.display = 'block';
-    controls.unlock();
+    // B. RENDERER
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    // C. CONTROLS
+    const ctrlSetup = setupControls(camera, document.body);
+    controls = ctrlSetup.controls;
+    updateMovement = ctrlSetup.updateMovement;
+
+    // D. SETUP WORLD OBJECTS
+
+    // 1. Entrance (Cổng & Thảm đỏ)
+    entrance = new Entrance(scene, controls);
+
+    // 2. VIP Booth
+    vipBooth = new VipBooth(scene, camera, { x: 0, y: 0, z: 0 });
+
+    // 3. Booth thường
+    const boothData = [
+        {
+            x: -12, z: -12, name: "FORD", logo: './assets/textures/ford.svg', text: "FORD - BUILT FORD TOUGH",
+            assistant: {
+                model: './assets/models/Assistant/detective_conan.glb',
+                animIdle: 'Idle',
+                animActive: 'Wave',
+                scale: 1
+            }
+        },
+        {
+            x: 12, z: -12, name: "BMW", logo: './assets/textures/BMW.svg', text: "BMW - THE ULTIMATE DRIVING MACHINE",
+            assistant: {
+                model: './assets/models/Assistant/naruto_sage_mode.glb',
+                animIdle: 'idle',
+                animActive: 'hiphop dance',
+                scale: 1.0
+            }
+        },
+        {
+            x: 12, z: 12, name: "lexus", logo: './assets/textures/Lexus.svg', text: "LEXUS - EXPERIENCE AMAZING",
+            assistant: {
+                model: './assets/models/Assistant/REPO1.glb',
+                animIdle: 'Idle',
+                animActive: 'Clapping',
+                scale: 1
+            }
+        },
+        {
+            x: -12, z: 12, name: "Porsche", logo: './assets/textures/Porsche.svg', text: "PORSCHE - THERE IS NO SUBSTITUTE",
+            assistant: {
+                model: './assets/models/Assistant/bleach.glb',
+                animIdle: 'idle',
+                animActive: 'Greeting',
+                scale: 2
+            }
+        }
+    ];
+
+    boothData.forEach((data) => {
+        const booth = new Booth(scene, camera, { x: data.x, y: 0, z: data.z }, data);
+        booth.mesh.lookAt(0, 0, 0);
+        const pillar = new Pillar(booth.mesh);
+        booths.push({ booth, pillar, data: data });
+    });
+
+    // E. CẤU HÌNH NHẠC
+    const playlist = [
+        { name: "All the stars - AdTurnUp", path: "./assets/audio/ADTurnUp - all the stars.flac" },
+        { name: "Raining in Chicago - AdTurnUp", path: "./assets/audio/ADTurnup - raining in chicago.flac" },
+        { name: "Dopamine - iirenic", path: "./assets/audio/iirenic - Dopamine.flac" }
+    ];
+    musicManager = new MusicManager(playlist);
+
+    // Tự động phát nhạc vì người dùng đã tương tác (Click nút Play)
+    musicManager.play();
+
+    // F. ĐĂNG KÝ SỰ KIỆN (EVENTS)
+    window.addEventListener('resize', onWindowResize);
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('click', onMouseClick);
+
+    // G. BẮT ĐẦU VÒNG LẶP
+    animate();
 }
 
-closeBtn.addEventListener('click', () => {
-    infoPanel.style.display = 'none';
-    controls.lock();
-});
+// --- 2. VÒNG LẶP ANIMATION (LOOP) ---
+function animate() {
+    requestAnimationFrame(animate);
 
-function isDescendant(p, ancestor) {
-    let cur = p;
-    while (cur) {
-        if (cur === ancestor) return true;
-        cur = cur.parent;
+    if (!scene || !camera || !renderer) return; // Chưa init thì không render
+
+    const delta = clock.getDelta();
+
+    // Update di chuyển & cửa
+    if (controls && updateMovement) {
+        const isDoorOpen = entrance ? entrance.isOpen : false;
+        updateMovement(delta, isDoorOpen);
     }
-    return false;
+
+    // Update các Booth & Assistant
+    if (vipBooth) vipBooth.update(delta);
+
+    booths.forEach(item => {
+        if (item.booth && item.booth.update) item.booth.update(delta);
+    });
+
+    renderer.render(scene, camera);
 }
 
-window.addEventListener('click', () => {
+// --- 3. XỬ LÝ SỰ KIỆN GIAO DIỆN MÀN HÌNH CHỜ ---
+const playBtn = document.getElementById('play-btn');
+const progressContainer = document.getElementById('progress-container');
+
+if (playBtn) {
+    playBtn.addEventListener('click', () => {
+        // 1. Ẩn nút Play, hiện thanh Loading
+        playBtn.style.display = 'none';
+        if (progressContainer) progressContainer.style.display = 'block';
+
+        // 2. Setup Loading Manager
+        setupLoadingUI('loading-screen', 'progress-bar', () => {
+            console.log("All assets loaded via LoadingManager");
+        });
+
+        // 3. Bắt đầu khởi tạo game
+        initGame();
+
+        // 4. TIMEOUT AN TOÀN: Nếu sau 15 giây vẫn chưa xong, ẩn loading screen
+        setTimeout(() => {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen && loadingScreen.style.display !== 'none') {
+                console.warn('Loading timeout - forcing close');
+                loadingScreen.style.display = 'none';
+            }
+        }, 15000); // 15 giây
+    });
+} else {
+    initGame();
+}
+
+
+// --- 4. TIỆN ÍCH & EVENT HANDLERS ---
+
+function onWindowResize() {
+    if (!camera || !renderer) return;
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function onKeyDown(event) {
+    if (!musicManager) return;
+    switch (event.code) {
+        case 'KeyJ': // Quay lại bài cũ
+            console.log("Music: Prev");
+            musicManager.prev();
+            break;
+        case 'KeyK': // Dừng / Phát
+            console.log("Music: Toggle");
+            musicManager.toggle();
+            break;
+        case 'KeyL': // Next bài
+            console.log("Music: Next");
+            musicManager.next();
+            break;
+    }
+}
+
+// xử lý Click chuột (Raycaster)
+function onMouseClick() {
     if (infoPanel.style.display === 'block') return;
 
-    if (!controls.isLocked) {
+    if (controls && !controls.isLocked) {
         controls.lock();
         return;
     }
@@ -126,28 +214,28 @@ window.addEventListener('click', () => {
     if (intersects.length > 0) {
         let target = intersects[0].object;
 
-        // --- TRƯỜNG HỢP ĐẶC BIỆT: CLICK CỬA RA VÀO ---
+        // A. ENTRANCE
         let doorCheck = target;
         while (doorCheck.parent && (!doorCheck.userData || !doorCheck.userData.isClickable)) {
             doorCheck = doorCheck.parent;
             if (!doorCheck) break;
         }
-
-        // Click trúng cửa
         if (doorCheck && doorCheck.userData && doorCheck.userData.type === 'door') {
             console.log("Clicked Door!");
-            entrance.handleClick();
+            if (entrance) entrance.handleClick();
             return;
         }
 
-        // --- TRƯỜNG HỢP 1: click đổi xe ---
+        // B. PILLAR
         let clickableObj = target;
         while (clickableObj.parent && !clickableObj.userData.isClickable) {
             clickableObj = clickableObj.parent;
         }
+
         if (clickableObj.userData && clickableObj.userData.isClickable && clickableObj.userData.type === 'pillar') {
             console.log("Clicked Pillar!");
-            // Hiệu ứng nháy màu
+
+            // Hiệu ứng nháy đèn nút bấm
             if (clickableObj.material && clickableObj.material.emissive) {
                 const oldHex = clickableObj.material.emissive.getHex();
                 clickableObj.material.emissive.setHex(0xffff00);
@@ -156,14 +244,14 @@ window.addEventListener('click', () => {
                 }, 200);
             }
 
-            // --- PHÂN LOẠI ---
-            // A. Kiểm tra VIP BOOTH
+            // 1. VIP Booth
             if (vipBooth && vipBooth.pillarObj && isDescendant(target, vipBooth.pillarObj.mesh)) {
                 console.log("-> Vip Booth Next Car");
                 vipBooth.nextCar();
                 return;
             }
-            // B. Kiểm tra CÁC BOOTH THƯỜNG
+
+            // 2. Booths Thường
             let found = false;
             booths.forEach(item => {
                 if (isDescendant(target, item.pillar.mesh)) {
@@ -175,7 +263,7 @@ window.addEventListener('click', () => {
             if (found) return;
         }
 
-        // TRƯỜNG HỢP 2: click vào xe để hiện info
+        // C. CHECK XE
         let cCheck = target;
         let depth = 0;
         while (cCheck.parent && !cCheck.userData.isCar && depth < 10) {
@@ -187,61 +275,35 @@ window.addEventListener('click', () => {
             showCarInfo(cCheck.userData.info);
         }
     }
-});
-
-// 4. ANIMATION LOOP
-const clock = new THREE.Clock();
-
-function animate() {
-    requestAnimationFrame(animate);
-    const delta = clock.getDelta();
-
-    // Truyền trạng thái cửa vào updateMovement
-    const isDoorOpen = entrance ? entrance.isOpen : false;
-    updateMovement(delta, isDoorOpen);
-
-    if (vipBooth) vipBooth.update(delta);
-
-    booths.forEach(item => {
-        if (item.booth && item.booth.update) item.booth.update(delta);
-    });
-
-    renderer.render(scene, camera);
 }
 
-animate();
-
-// --- 5. CẤU HÌNH NHẠC ---
-const playlist = [
-    { name: "All the stars - AdTurnUp", path: "./assets/audio/ADTurnUp - all the stars.flac" },
-    { name: "Raining in Chicago - AdTurnUp", path: "./assets/audio/ADTurnup - raining in chicago.flac" },
-    { name: "Dopamine - iirenic", path: "./assets/audio/iirenic - Dopamine.flac" }
-];
-// Khởi tạo Music Manager
-const musicManager = new MusicManager(playlist);
-
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-window.addEventListener('keydown', (event) => {
-    
-    switch(event.code) {
-        case 'KeyJ': // Quay lại bài cũ
-            console.log("Music: Prev");
-            musicManager.prev();
-            break;
-            
-        case 'KeyK': // Dừng / Phát
-            console.log("Music: Toggle");
-            musicManager.toggle();
-            break;
-            
-        case 'KeyL': // Next bài
-            console.log("Music: Next");
-            musicManager.next();
-            break;
+// kiểm tra
+function isDescendant(p, ancestor) {
+    let cur = p;
+    while (cur) {
+        if (cur === ancestor) return true;
+        cur = cur.parent;
     }
+    return false;
+}
+
+// Hàm hiển thị thông tin xe
+function showCarInfo(carData) {
+    document.getElementById('info-name').innerText = carData.Name;
+    document.getElementById('info-type').innerText = carData.vehicle_type || "Car";
+    document.getElementById('info-price').innerText = carData.Price;
+    document.getElementById('info-engine').innerText = carData.engine;
+    document.getElementById('info-power').innerText = carData.power;
+    document.getElementById('info-seating').innerText = carData.seating_capacity;
+    document.getElementById('info-year').innerText = carData.year;
+    document.getElementById('info-desc').innerText = carData.global_information || "No description available.";
+
+    infoPanel.style.display = 'block';
+    if (controls) controls.unlock(); // Hiện chuột để bấm nút đóng
+}
+
+// Sự kiện đóng bảng thông tin
+closeBtn.addEventListener('click', () => {
+    infoPanel.style.display = 'none';
+    if (controls) controls.lock(); // Ẩn chuột, tiếp tục game
 });

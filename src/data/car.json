@@ -947,6 +947,19 @@
     ],
     "FORD": [
         {
+            "Name": "2016 Ford GT LM GTE",
+            "vehicle_type": "Race Car",
+            "model": "./assets/models/Ford/2016_ford_gt_lm_gte.glb",
+            "scale": 100.0,
+            "Price": "N/A (Race Car)",
+            "engine": "3.5L Twin-Turbo V6",
+            "transmission": "Sequential",
+            "power": "Over 600 hp",
+            "seating_capacity": 1,
+            "year": 2016,
+            "global_information": "The 2016 Ford GT LM GTE is a Le Mans endurance racer with advanced twin-turbo V6 and extreme aerodynamics. It dominated GT racing with cutting-edge tech and legendary Ford heritage."
+        },
+        {
             "Name": "2005 Ford Shelby GR1",
             "vehicle_type": "Concept Supercar",
             "model": "./assets/models/Ford/2005_ford_shelby_gr1.glb",
@@ -962,7 +975,7 @@
         {
             "Name": "2010 Ford F150 SVT Raptor R",
             "vehicle_type": "Off-Road Pickup Truck",
-            "model": "./assets/models/Ford/2010_ford-f-150_svt_raptor_r.glb",
+            "model": "./assets/models/Ford/2010_ford_f150_svt_raptor_r.glb",
             "scale": 100.0,
             "Price": "40000$",
             "engine": "6.2L V8",
@@ -970,6 +983,10 @@
             "power": "411 hp",
             "seating_capacity": 5,
             "year": 2010,
+            "offset": {
+                "x": -1.5,
+                "z": 0.0
+            },
             "global_information": "The 2010 Ford F-150 SVT Raptor is a high-performance off-road beast built for desert racing. With a powerful 6.2L V8, long-travel suspension, and wide stance, it's designed for extreme terrain while offering impressive on-road capability."
         },
         {
@@ -1009,6 +1026,9 @@
             "power": "237 hp",
             "seating_capacity": 5,
             "year": 2011,
+            "offset": {
+                "y": 0.7
+            },
             "global_information": "The 2011 Land Rover Range Rover Evoque is a stylish compact luxury SUV with premium design and off-road capability. It offers refined performance, upscale interior, and versatile AWD for urban and adventure driving."
         },
         {
@@ -1022,6 +1042,9 @@
             "power": "420 hp",
             "seating_capacity": 4,
             "year": 2013,
+            "offset": {
+                "y": 0.7
+            },
             "global_information": "The 2013 Ford Mustang GT is a classic American muscle car with the potent Coyote 5.0L V8 delivering 420 hp. It offers raw power, sharp handling, and iconic styling for pure driving excitement."
         },
         {
@@ -1064,19 +1087,6 @@
             "global_information": "The 2015 Ford Mustang RTR by Vaughn Gittin Jr. adds aggressive styling, aero upgrades, and optional supercharged power up to 725 hp. It's a street-legal beast blending drift heritage with high-performance capability."
         },
         {
-            "Name": "2016 Ford GT LM GTE",
-            "vehicle_type": "Race Car",
-            "model": "./assets/models/Ford/2016_ford_gt_lm_gte.glb",
-            "scale": 100.0,
-            "Price": "N/A (Race Car)",
-            "engine": "3.5L Twin-Turbo V6",
-            "transmission": "Sequential",
-            "power": "Over 600 hp",
-            "seating_capacity": 1,
-            "year": 2016,
-            "global_information": "The 2016 Ford GT LM GTE is a Le Mans endurance racer with advanced twin-turbo V6 and extreme aerodynamics. It dominated GT racing with cutting-edge tech and legendary Ford heritage."
-        },
-        {
             "Name": "2016 Ford Mustang Shelby GT350R",
             "vehicle_type": "Track-Focused Muscle Car",
             "model": "./assets/models/Ford/2016_ford_mustang_shelby_gt350r.glb",
@@ -1113,6 +1123,9 @@
             "power": "450 hp",
             "seating_capacity": 5,
             "year": 2017,
+            "offset": {
+                "y": 0.5
+            },
             "global_information": "The 2017 Ford F-150 Raptor is a next-gen desert runner with twin-turbo EcoBoost power, Fox shocks, and massive ground clearance. It's built for high-speed off-road dominance with everyday usability."
         },
         {
@@ -1223,7 +1236,7 @@
             "Name": "2023 Ford GT MK IV",
             "vehicle_type": "Track Hypercar",
             "model": "./assets/models/Ford/2023_ford_gt_mk_iv.glb",
-            "scale": 100.0,
+            "scale": 1.0,
             "Price": "1600000$",
             "engine": "3.5L Twin-Turbo V6 EcoBoost",
             "transmission": "7-Speed Dual-Clutch",
@@ -1236,7 +1249,7 @@
             "Name": "2023 Land Rover Range Rover Sport",
             "vehicle_type": "Luxury Performance SUV",
             "model": "./assets/models/Ford/2023_land_rover_range_rover_sport.glb",
-            "scale": 100.0,
+            "scale": 0.1,
             "Price": "85000$",
             "engine": "3.0L Turbo Inline-6 Hybrid",
             "transmission": "8-Speed Automatic",
@@ -1248,7 +1261,7 @@
         {
             "Name": "2024 Ford F150 Raptor R",
             "vehicle_type": "Off-Road Pickup Truck",
-            "model": "./assets/models/Ford/2024_f-150_raptor_r.glb",
+            "model": "./assets/models/Ford/2024_ford_f150_raptor_r.glb",
             "scale": 100.0,
             "Price": "110000$",
             "engine": "5.2L Supercharged V8",
@@ -1314,7 +1327,7 @@
             "Name": "Range Rover Sport 2018",
             "vehicle_type": "Luxury Performance SUV",
             "model": "./assets/models/Ford/range_rover_sport_2018.glb",
-            "scale": 100.0,
+            "scale": 1.0,
             "Price": "70000$",
             "engine": "3.0L Supercharged V6",
             "transmission": "8-Speed Automatic",

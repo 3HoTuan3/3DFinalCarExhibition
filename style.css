@@ -71,3 +71,76 @@
     color: #aaa;
     text-transform: uppercase;
 }
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Luôn nằm trên cùng */
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+}
+
+.title {
+    font-size: 4rem;
+    margin: 0;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 0 0 20px #00ffff; /* Hiệu ứng Neon */
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #888;
+    margin-bottom: 40px;
+}
+
+/* NÚT PLAY */
+#play-btn {
+    padding: 15px 50px;
+    font-size: 1.5rem;
+    background: transparent;
+    color: #00ffff;
+    border: 2px solid #00ffff;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+#play-btn:hover {
+    background: #00ffff;
+    color: black;
+    box-shadow: 0 0 30px #00ffff;
+    transform: scale(1.05);
+}
+
+/* THANH LOADING */
+#progress-container {
+    width: 300px;
+    height: 4px;
+    background: #333;
+    margin: 20px auto;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #00ffff;
+    box-shadow: 0 0 10px #00ffff;
+    transition: width 0.2s;
+    font-size: 0;
+}
