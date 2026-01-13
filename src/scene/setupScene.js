@@ -55,6 +55,63 @@ export function setupScene() {
     rightWall.receiveShadow = true;
     scene.add(rightWall);
 
+    // --- 3. TRẦN NHÀ ---
+    const ceilingGeo = new THREE.PlaneGeometry(40, 40);
+    const ceilingMat = new THREE.MeshStandardMaterial({ 
+        color: 0x222222,
+        side: THREE.DoubleSide 
+    });
+    const ceiling = new THREE.Mesh(ceilingGeo, ceilingMat);
+    ceiling.rotation.x = Math.PI / 2; 
+    ceiling.position.y = wallHeight; 
+    scene.add(ceiling);
+
+    // --- 4. HỆ THỐNG ĐÈN TRẦN ---
+    const lightTargets = [
+        { x: 0, z: 0 },
+        { x: -12, z: -12 },
+        { x: 12, z: -12 },
+        { x: 12, z: 12 },
+        { x: -12, z: 12 } 
+    ];
+
+    lightTargets.forEach(pos => {
+        // a) Tạo Model bóng đèn trên trần
+        const fixtureGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 32);
+        const fixtureMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
+        const fixture = new THREE.Mesh(fixtureGeo, fixtureMat);
+        fixture.position.set(pos.x, wallHeight - 0.1, pos.z); 
+        scene.add(fixture);
+
+        // b) Tạo lõi đèn phát sáng (Emissive)
+        const bulbGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.05, 32);
+        const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffffee }); 
+        const bulb = new THREE.Mesh(bulbGeo, bulbMat);
+        bulb.position.y = -0.11; 
+        fixture.add(bulb);
+
+        // c) Tạo SpotLight chiếu xuống
+        const spotLight = new THREE.SpotLight(0xffffff, 50);
+        spotLight.position.set(pos.x, wallHeight - 0.5, pos.z);
+        
+        spotLight.target.position.set(pos.x, 0, pos.z);
+        
+        // Cấu hình bóng đổ và góc chiếu
+        spotLight.angle = Math.PI / 6;
+        spotLight.penumbra = 0.5;
+        spotLight.distance = 30;
+        spotLight.decay = 1;
+        spotLight.castShadow = true; 
+
+        // Tối ưu shadow map
+        spotLight.shadow.mapSize.width = 1024;
+        spotLight.shadow.mapSize.height = 1024;
+        spotLight.shadow.bias = -0.0001;
+
+        scene.add(spotLight);
+        scene.add(spotLight.target);
+    });
+
     // --- GridHelper để dễ căn vị trí
     // const grid = new THREE.GridHelper(tileSize * tilesX, tileSize * tilesX, 0x000000, 0x555555);
     // scene.add(grid);
