@@ -33,3 +33,41 @@
     padding: 15px;
     border-radius: 8px;
 }
+
+#music-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 250px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    border-left: 4px solid #00ffff;
+    pointer-events: none; 
+    z-index: 150;
+    text-align: right;
+}
+
+#music-name {
+    font-weight: bold;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+    color: #ffeb3b;
+}
+
+#music-time {
+    font-size: 14px;
+    color: #ddd;
+    margin-bottom: 5px;
+}
+
+#music-controls-hint {
+    font-size: 10px;
+    color: #aaa;
+    text-transform: uppercase;
+}

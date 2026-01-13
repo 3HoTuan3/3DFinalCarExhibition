@@ -207,7 +207,7 @@ export class VipBooth {
         // --- 7. Trợ lý ảo ---        
         this.assistant = new Assistant(
             this.mesh,
-            { x: -6.0, y: 0, z: this.radius - 11.5 },
+            { x: -4.0, y: 0, z: this.radius - 11.5 },
             this.assistantConfig.model,
             this.assistantConfig.scale,
             this.assistantConfig.rotation // Truyền rotation

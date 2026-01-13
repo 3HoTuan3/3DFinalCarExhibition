@@ -7,6 +7,7 @@ import { Booth } from './booth/booth.js';
 import { Pillar } from './booth/pillar.js';
 import { VipBooth } from './booth/VipBooth.js';
 import { Entrance } from './scene/entrance.js';
+import { MusicManager } from './utils/musicManager.js';
 
 // 1. INIT SCENE
 const scene = setupScene();
@@ -210,8 +211,37 @@ function animate() {
 
 animate();
 
+// --- 5. CẤU HÌNH NHẠC ---
+const playlist = [
+    { name: "All the stars - AdTurnUp", path: "./assets/audio/ADTurnUp - all the stars.flac" },
+    { name: "Raining in Chicago - AdTurnUp", path: "./assets/audio/ADTurnup - raining in chicago.flac" },
+    { name: "Dopamine - iirenic", path: "./assets/audio/iirenic - Dopamine.flac" }
+];
+// Khởi tạo Music Manager
+const musicManager = new MusicManager(playlist);
+
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+window.addEventListener('keydown', (event) => {
+    
+    switch(event.code) {
+        case 'KeyJ': // Quay lại bài cũ
+            console.log("Music: Prev");
+            musicManager.prev();
+            break;
+            
+        case 'KeyK': // Dừng / Phát
+            console.log("Music: Toggle");
+            musicManager.toggle();
+            break;
+            
+        case 'KeyL': // Next bài
+            console.log("Music: Next");
+            musicManager.next();
+            break;
+    }
 });
