@@ -4,7 +4,6 @@ import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockCont
 export function setupControls(camera, domElement) {
     const controls = new PointerLockControls(camera, domElement);
 
-    // Xử lý ẩn/hiện hướng dẫn khi lock/unlock
     controls.addEventListener('lock', () => {
         const instructions = document.getElementById('instructions');
         if (instructions) instructions.style.display = 'none';
@@ -13,11 +12,8 @@ export function setupControls(camera, domElement) {
     controls.addEventListener('unlock', () => {
         const infoPanel = document.getElementById('car-info-panel');
         const dialogueBox = document.getElementById('dialogue-box');
-        
-        // Nếu đang hiện UI thì không hiện hướng dẫn lại
         if (infoPanel && infoPanel.style.display === 'block') return;
         if (dialogueBox && dialogueBox.style.display === 'block') return;
-
         const instructions = document.getElementById('instructions');
         if (instructions) instructions.style.display = 'block';
     });
@@ -45,7 +41,7 @@ export function setupControls(camera, domElement) {
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('keyup', onKeyUp);
 
-    // --- HÀM UPDATE DI CHUYỂN & VA CHẠM ---
+    // --- UPDATE MOVEMENT ---
     const updateMovement = (delta, isDoorOpen = false) => {
         if (!controls.isLocked) return;
 
@@ -58,28 +54,25 @@ export function setupControls(camera, domElement) {
         if (moveState.right) velocity.x += 1;
 
         velocity.normalize().multiplyScalar(speed);
-
         controls.moveRight(velocity.x);
         controls.moveForward(-velocity.z);
 
+        // --- XỬ LÝ COLLISION ---
         const pos = camera.position;
-        const wallLimit = 19.5; 
+        const wallBuffer = 19.0; 
+        if (pos.x < -wallBuffer) pos.x = -wallBuffer;
+        if (pos.x > wallBuffer) pos.x = wallBuffer;
+        if (pos.z > wallBuffer) pos.z = wallBuffer;
+        const doorHalfWidth = 3.5;
+        const isAlignedWithDoor = (pos.x > -doorHalfWidth && pos.x < doorHalfWidth);
 
-        // 1. Chặn tường Trái/Phải (X)
-        if (pos.x < -wallLimit) pos.x = -wallLimit;
-        if (pos.x > wallLimit) pos.x = wallLimit;
-
-        // 2. Chặn tường Sau (Z Dương) - Luôn chặn
-        if (pos.z > wallLimit) pos.z = wallLimit;
-
-        // 3. Xử lý tường Trước
-        if (isDoorOpen) {
-            if (pos.z < -60) pos.z = -60;
+        if (isDoorOpen && isAlignedWithDoor) {
+            if (pos.z < -60) pos.z = -60; 
         } else {
             if (pos.z > -20) {
-                if (pos.z < -wallLimit) pos.z = -wallLimit;
+                if (pos.z < -19.0) pos.z = -19.0;
             } else {
-                if (pos.z > -20.5) pos.z = -20.5;
+                if (pos.z > -21.0) pos.z = -21.0;
             }
         }
     };
