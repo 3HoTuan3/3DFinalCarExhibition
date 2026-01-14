@@ -4,99 +4,83 @@ import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockCont
 export function setupControls(camera, domElement) {
     const controls = new PointerLockControls(camera, domElement);
 
-    // Sự kiện click để khóa chuột
-    domElement.addEventListener('click', () => {
-        controls.lock();
-    });
-
+    // Xử lý ẩn/hiện hướng dẫn khi lock/unlock
     controls.addEventListener('lock', () => {
-        document.getElementById('instructions').style.display = 'none';
+        const instructions = document.getElementById('instructions');
+        if (instructions) instructions.style.display = 'none';
     });
 
     controls.addEventListener('unlock', () => {
-        document.getElementById('instructions').style.display = 'block';
+        const infoPanel = document.getElementById('car-info-panel');
+        const dialogueBox = document.getElementById('dialogue-box');
+        
+        // Nếu đang hiện UI thì không hiện hướng dẫn lại
+        if (infoPanel && infoPanel.style.display === 'block') return;
+        if (dialogueBox && dialogueBox.style.display === 'block') return;
+
+        const instructions = document.getElementById('instructions');
+        if (instructions) instructions.style.display = 'block';
     });
 
-    // --- LOGIC DI CHUYỂN (WASD) ---
-    const moveState = {
-        forward: false,
-        backward: false,
-        left: false,
-        right: false
-    };
+    const moveState = { forward: false, backward: false, left: false, right: false };
 
     const onKeyDown = (event) => {
         switch (event.code) {
-            case 'ArrowUp':
-            case 'KeyW': moveState.forward = true; break;
-            case 'ArrowLeft':
-            case 'KeyA': moveState.left = true; break;
-            case 'ArrowDown':
-            case 'KeyS': moveState.backward = true; break;
-            case 'ArrowRight':
-            case 'KeyD': moveState.right = true; break;
+            case 'ArrowUp': case 'KeyW': moveState.forward = true; break;
+            case 'ArrowLeft': case 'KeyA': moveState.left = true; break;
+            case 'ArrowDown': case 'KeyS': moveState.backward = true; break;
+            case 'ArrowRight': case 'KeyD': moveState.right = true; break;
         }
     };
 
     const onKeyUp = (event) => {
         switch (event.code) {
-            case 'ArrowUp':
-            case 'KeyW': moveState.forward = false; break;
-            case 'ArrowLeft':
-            case 'KeyA': moveState.left = false; break;
-            case 'ArrowDown':
-            case 'KeyS': moveState.backward = false; break;
-            case 'ArrowRight':
-            case 'KeyD': moveState.right = false; break;
+            case 'ArrowUp': case 'KeyW': moveState.forward = false; break;
+            case 'ArrowLeft': case 'KeyA': moveState.left = false; break;
+            case 'ArrowDown': case 'KeyS': moveState.backward = false; break;
+            case 'ArrowRight': case 'KeyD': moveState.right = false; break;
         }
     };
 
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('keyup', onKeyUp);
 
-    // --- COLLISION (Bounding Boundary) ---
-    const updateMovement = (delta, doorIsOpen = false) => {
+    // --- HÀM UPDATE DI CHUYỂN & VA CHẠM ---
+    const updateMovement = (delta, isDoorOpen = false) => {
         if (!controls.isLocked) return;
 
         const speed = 10.0 * delta;
         const velocity = new THREE.Vector3();
 
-        // Tính hướng di chuyển local
         if (moveState.forward) velocity.z -= 1;
         if (moveState.backward) velocity.z += 1;
         if (moveState.left) velocity.x -= 1;
         if (moveState.right) velocity.x += 1;
 
-        // Lưu vị trí trước khi di chuyển để tránh "bịt" người đang ở ngoài khi cửa đóng
+        velocity.normalize().multiplyScalar(speed);
+
+        controls.moveRight(velocity.x);
+        controls.moveForward(-velocity.z);
+
         const pos = camera.position;
-        const prevZ = pos.z;
+        const wallLimit = 19.5; 
 
-        if (velocity.lengthSq() > 0) {
-            velocity.normalize().multiplyScalar(speed);
-            // moveRight/moveForward làm việc theo hệ control
-            controls.moveRight(velocity.x);
-            controls.moveForward(-velocity.z);
-        }
+        // 1. Chặn tường Trái/Phải (X)
+        if (pos.x < -wallLimit) pos.x = -wallLimit;
+        if (pos.x > wallLimit) pos.x = wallLimit;
 
-        // COLLISION: giới hạn toạ độ trong map (map ~40x40, biên = 20m). Giữ cách tường ~1m => limit = 19
-        const limit = 19;
+        // 2. Chặn tường Sau (Z Dương) - Luôn chặn
+        if (pos.z > wallLimit) pos.z = wallLimit;
 
-        // Giới hạn X
-        if (pos.x < -limit) pos.x = -limit;
-        if (pos.x > limit) pos.x = limit;
-
-        // Giới hạn Z với xử lý cửa trước (Z âm)
-        if (doorIsOpen) {
-            // Nếu cửa mở: cho phép đi ra phía trước ngoài sân tới -40
-            if (pos.z < -40) pos.z = -40;
-            if (pos.z > limit) pos.z = limit;
+        // 3. Xử lý tường Trước
+        if (isDoorOpen) {
+            if (pos.z < -60) pos.z = -60;
         } else {
-            // Nếu cửa đóng:
-            // - Nếu người đang ở ngoài (prevZ < -limit), không ép họ dịch chuyển vào trong khi chỉ click để khóa chuột.
-            // - Nếu người ở trong và cố gắng di chuyển qua biên ra ngoài, chặn ở -limit.
-            if (prevZ >= -limit && pos.z < -limit) pos.z = -limit;
-            if (pos.z > limit) pos.z = limit;
-            // Nếu prevZ < -limit thì giữ pos.z như hiện tại (người vẫn ở ngoài)
+            if (pos.z > -20) {
+                if (pos.z < -wallLimit) pos.z = -wallLimit;
+            } else {
+                if (pos.z > -20.5) pos.z = -20.5;
+            }
         }
     };
 

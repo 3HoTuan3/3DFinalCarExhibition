@@ -319,7 +319,7 @@ function isDescendant(p, ancestor) {
     return false;
 }
 
-// Hàm hiển thị thông tin xe
+// Hiển thị thông tin xe
 function showCarInfo(carData) {
     document.getElementById('info-name').innerText = carData.Name;
     document.getElementById('info-type').innerText = carData.vehicle_type || "Car";
