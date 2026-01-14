@@ -5,11 +5,12 @@ import { CarManager } from './carManager.js';
 import { Assistant } from './assistant.js';
 
 export class VipBooth {
-    constructor(scene, camera, position = { x: 0, y: 0, z: 0 }) {
+    constructor(scene, camera, position = { x: 0, y: 0, z: 0 }, config = {}) {
         this.scene = scene;
         this.camera = camera;
         this.position = position;
         this.radius = 6;
+        this.dialogue = config.dialogue || ["Welcome to VIP area!"];
 
         // Các biến cho màn hình LED
         this.ledCanvas = null;
@@ -210,7 +211,8 @@ export class VipBooth {
             { x: -4.0, y: 0, z: this.radius - 11.5 },
             this.assistantConfig.model,
             this.assistantConfig.scale,
-            this.assistantConfig.rotation // Truyền rotation
+            this.assistantConfig.rotation,
+            this.dialogue
         );
     }
 

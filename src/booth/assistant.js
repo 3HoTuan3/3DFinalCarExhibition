@@ -2,12 +2,13 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export class Assistant {
-    constructor(parentGroup, position = { x: 0, y: 0, z: 0 }, modelPath, scale = 1, rotation = 0) {
+    constructor(parentGroup, position = { x: 0, y: 0, z: 0 }, modelPath, scale = 1, rotation = 0, dialogueData = []) {
         this.parent = parentGroup;
         this.position = position;
         this.modelPath = modelPath;
         this.scale = scale;
-        this.rotation = rotation; // Thêm rotation
+        this.rotation = rotation;
+        this.dialogueData = dialogueData;
 
         this.mixer = null;
         this.model = null;
@@ -24,17 +25,21 @@ export class Assistant {
             (gltf) => {
                 this.model = gltf.scene;
                 this.model.position.set(this.position.x, this.position.y, this.position.z);
-                this.model.scale.set(this.scale, this.scale, this.scale); // Sử dụng scale
-                this.model.rotation.y = this.rotation; // Áp dụng rotation
+                this.model.scale.set(this.scale, this.scale, this.scale);
+                this.model.rotation.y = this.rotation;
 
                 this.model.traverse((child) => {
                     if (child.isMesh) {
                         child.castShadow = true;
                         child.receiveShadow = true;
+                        //
+                        child.userData.isAssistant = true;
+                        child.userData.dialogue = this.dialogueData;
+                        child.userData.assistantName = "Showroom Assistant";
                     }
                 });
 
-                // --- XỬ LÝ ANIMATION ---
+                // --- ANIMATION ---
                 this.mixer = new THREE.AnimationMixer(this.model);
 
                 // Duyệt qua tất cả animation có trong file
@@ -42,7 +47,6 @@ export class Assistant {
                     // Tạo action cho từng clip và lưu vào object this.actions
                     const action = this.mixer.clipAction(clip);
                     this.actions[clip.name] = action;
-
                     // In tên ra console file có những animation gì
                     console.log(`Animation found: "${clip.name}"`);
                 });

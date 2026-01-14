@@ -9,12 +9,13 @@ import { VipBooth } from './booth/VipBooth.js';
 import { Entrance } from './scene/entrance.js';
 import { MusicManager } from './utils/musicManager.js';
 import { setupLoadingUI } from './ui/loadingManager.js';
+import { DialogueManager } from './utils/dialogueManager.js';
 
 // --- Biến toàn cục ---
 let scene, camera, renderer, controls, updateMovement;
 let vipBooth, entrance;
 let booths = [];
-let musicManager;
+let musicManager, dialogueManager;
 
 const clock = new THREE.Clock();
 const raycaster = new THREE.Raycaster();
@@ -24,7 +25,7 @@ const infoPanel = document.getElementById('car-info-panel');
 const closeBtn = document.getElementById('close-btn');
 
 // --- 1. KHỞI TẠO GAME ---
-function initGame() {
+async function initGame() {
     // A. INIT SCENE & CAMERA
     scene = setupScene();
     camera = setupCamera();
@@ -36,10 +37,21 @@ function initGame() {
     renderer.shadowMap.enabled = true;
     document.body.appendChild(renderer.domElement);
 
+    // --- LOAD DỮ LIỆU HỘI THOẠI TỪ JSON ---
+    let dialogueData = {};
+    try {
+        const response = await fetch('./src/data/dialogues.json');
+        dialogueData = await response.json();
+        console.log("Dialogues loaded:", dialogueData);
+    } catch (error) {
+        console.error("Lỗi load dialogues.json:", error);
+    }
+
     // C. CONTROLS
     const ctrlSetup = setupControls(camera, document.body);
     controls = ctrlSetup.controls;
     updateMovement = ctrlSetup.updateMovement;
+    dialogueManager = new DialogueManager(controls);
 
     // D. SETUP WORLD OBJECTS
 
@@ -47,7 +59,9 @@ function initGame() {
     entrance = new Entrance(scene, controls);
 
     // 2. VIP Booth
-    vipBooth = new VipBooth(scene, camera, { x: 0, y: 0, z: 0 });
+    vipBooth = new VipBooth(scene, camera, { x: 0, y: 0, z: 0 }, {
+        dialogue: dialogueData["VIP"]
+    });
 
     // 3. Booth thường
     const boothData = [
@@ -57,7 +71,8 @@ function initGame() {
                 model: './assets/models/Assistant/detective_conan.glb',
                 animIdle: 'Idle',
                 animActive: 'Wave',
-                scale: 1
+                scale: 1,
+                dialogue: dialogueData["FORD"]
             }
         },
         {
@@ -66,7 +81,8 @@ function initGame() {
                 model: './assets/models/Assistant/naruto_sage_mode.glb',
                 animIdle: 'idle',
                 animActive: 'hiphop dance',
-                scale: 1.0
+                scale: 1.0,
+                dialogue: dialogueData["BMW"]
             }
         },
         {
@@ -75,7 +91,8 @@ function initGame() {
                 model: './assets/models/Assistant/REPO1.glb',
                 animIdle: 'Idle',
                 animActive: 'Clapping',
-                scale: 1
+                scale: 1,
+                dialogue: dialogueData["lexus"]
             }
         },
         {
@@ -84,7 +101,8 @@ function initGame() {
                 model: './assets/models/Assistant/bleach.glb',
                 animIdle: 'idle',
                 animActive: 'Greeting',
-                scale: 2
+                scale: 1.5,
+                dialogue: dialogueData["Porsche"]
             }
         }
     ];
@@ -104,10 +122,10 @@ function initGame() {
     ];
     musicManager = new MusicManager(playlist);
 
-    // Tự động phát nhạc vì người dùng đã tương tác (Click nút Play)
+    // Tự động phát nhạc
     musicManager.play();
 
-    // F. ĐĂNG KÝ SỰ KIỆN (EVENTS)
+    // F. EVENTS
     window.addEventListener('resize', onWindowResize);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('click', onMouseClick);
@@ -182,6 +200,13 @@ function onWindowResize() {
 }
 
 function onKeyDown(event) {
+    if (dialogueManager && dialogueManager.isActive) {
+        if (event.code === 'Space') {
+            dialogueManager.next();
+        }
+        return; 
+    }
+
     if (!musicManager) return;
     switch (event.code) {
         case 'KeyJ': // Quay lại bài cũ
@@ -201,6 +226,11 @@ function onKeyDown(event) {
 
 // xử lý Click chuột (Raycaster)
 function onMouseClick() {
+    if (dialogueManager && dialogueManager.isActive) {
+        dialogueManager.next();
+        return;
+    }
+
     if (infoPanel.style.display === 'block') return;
 
     if (controls && !controls.isLocked) {
@@ -214,28 +244,37 @@ function onMouseClick() {
     if (intersects.length > 0) {
         let target = intersects[0].object;
 
-        // A. ENTRANCE
+        // A. Check assistant
+        let assistCheck = target;
+        while (assistCheck.parent && !assistCheck.userData.isAssistant) {
+            assistCheck = assistCheck.parent;
+            if(!assistCheck) break; 
+        }
+        if (assistCheck && assistCheck.userData && assistCheck.userData.isAssistant) {
+            console.log("Clicked Assistant!");
+            const name = assistCheck.userData.assistantName || "Assistant";
+            const lines = assistCheck.userData.dialogue || ["Xin chào!"];
+            dialogueManager.start(name, lines);
+            return;
+        }
+
+        // B. ENTRANCE
         let doorCheck = target;
         while (doorCheck.parent && (!doorCheck.userData || !doorCheck.userData.isClickable)) {
             doorCheck = doorCheck.parent;
             if (!doorCheck) break;
         }
         if (doorCheck && doorCheck.userData && doorCheck.userData.type === 'door') {
-            console.log("Clicked Door!");
             if (entrance) entrance.handleClick();
             return;
         }
 
-        // B. PILLAR
+        // C. PILLAR
         let clickableObj = target;
         while (clickableObj.parent && !clickableObj.userData.isClickable) {
             clickableObj = clickableObj.parent;
         }
-
         if (clickableObj.userData && clickableObj.userData.isClickable && clickableObj.userData.type === 'pillar') {
-            console.log("Clicked Pillar!");
-
-            // Hiệu ứng nháy đèn nút bấm
             if (clickableObj.material && clickableObj.material.emissive) {
                 const oldHex = clickableObj.material.emissive.getHex();
                 clickableObj.material.emissive.setHex(0xffff00);
@@ -243,19 +282,13 @@ function onMouseClick() {
                     if (clickableObj.material) clickableObj.material.emissive.setHex(oldHex);
                 }, 200);
             }
-
-            // 1. VIP Booth
             if (vipBooth && vipBooth.pillarObj && isDescendant(target, vipBooth.pillarObj.mesh)) {
-                console.log("-> Vip Booth Next Car");
                 vipBooth.nextCar();
                 return;
             }
-
-            // 2. Booths Thường
             let found = false;
             booths.forEach(item => {
                 if (isDescendant(target, item.pillar.mesh)) {
-                    console.log(`-> ${item.data.name} Booth Next Car`);
                     item.booth.nextCar();
                     found = true;
                 }
@@ -263,7 +296,7 @@ function onMouseClick() {
             if (found) return;
         }
 
-        // C. CHECK XE
+        // D. CHECK XE
         let cCheck = target;
         let depth = 0;
         while (cCheck.parent && !cCheck.userData.isCar && depth < 10) {
@@ -271,7 +304,6 @@ function onMouseClick() {
             depth++;
         }
         if (cCheck.userData && cCheck.userData.isCar && cCheck.userData.info) {
-            console.log("Clicked Car:", cCheck.userData.info.Name);
             showCarInfo(cCheck.userData.info);
         }
     }
@@ -307,3 +339,11 @@ closeBtn.addEventListener('click', () => {
     infoPanel.style.display = 'none';
     if (controls) controls.lock(); // Ẩn chuột, tiếp tục game
 });
+
+const originalWarn = console.warn;
+console.warn = function (msg) {
+    if (msg && msg.includes && msg.includes('THREE.WebGLTextures')) {
+        return; // Bỏ qua cảnh báo THREE.js texture
+    }
+    originalWarn.apply(console, arguments);
+};

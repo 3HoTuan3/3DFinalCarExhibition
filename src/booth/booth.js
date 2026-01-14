@@ -117,10 +117,14 @@ export class Booth {
         }
 
         // --- 7. Trợ lý ảo ---
+        const dialogue = this.assistantConfig.dialogue || ["Welcome!"];
         this.assistant = new Assistant(
             this.mesh,
             { x: 5.5, y: 0, z: 2.5 }, // Vị trí đứng
-            this.assistantConfig.model
+            this.assistantConfig.model,
+            this.assistantConfig.scale || 1,
+            0,
+            dialogue
         );
 
         this.scene.add(this.mesh);

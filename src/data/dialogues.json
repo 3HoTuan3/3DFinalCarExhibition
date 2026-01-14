@@ -1,0 +1,32 @@
+{
+    "FORD": [
+        "Chào mừng đến với gian hàng Ford!",
+        "Chúng tôi mang đến sự mạnh mẽ và bền bỉ chuẩn Mỹ.",
+        "Đừng bỏ lỡ dòng bán tải Ranger trứ danh của chúng tôi.",
+        "Hãy bấm vào nút trên trụ để xem các mẫu xe nhé."
+    ],
+    "BMW": [
+        "Guten Tag! Chào mừng đến với BMW.",
+        "Cảm giác lái tuyệt vời (Sheer Driving Pleasure) là triết lý của chúng tôi.",
+        "Hôm nay chúng tôi mang đến những dòng M Performance mạnh mẽ nhất.",
+        "Bạn đã sẵn sàng để trải nghiệm tốc độ chưa?"
+    ],
+    "lexus": [
+        "Konnichiwa! Lexus hân hạnh đón tiếp.",
+        "Sự sang trọng, êm ái và công nghệ Hybrid tiên phong.",
+        "Từng chi tiết xe được chế tác bởi các Takumi bậc thầy.",
+        "Hãy tận hưởng không gian tĩnh lặng tuyệt đối này."
+    ],
+    "Porsche": [
+        "Porsche - Không có gì thay thế được.",
+        "Di sản đua xe thể thao chảy trong từng đường nét thiết kế.",
+        "Dù là 911 huyền thoại hay Taycan điện khí hóa,",
+        "Chúng tôi luôn dẫn đầu về hiệu suất."
+    ],
+    "VIP": [
+        "Xin chào! Đây là khu vực VIP của Toyota.",
+        "Tại đây chúng tôi trưng bày những mẫu xe huyền thoại và đắt giá nhất.",
+        "Chiếc Century Royal này là biểu tượng của quyền lực và sự sang trọng tuyệt đối.",
+        "Hãy tự nhiên chiêm ngưỡng!"
+    ]
+}
