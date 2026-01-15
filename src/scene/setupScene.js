@@ -32,36 +32,47 @@ export function setupScene() {
     }
 
     // --- 2. Sân ngoài ---
-    const textureLoader = new THREE.TextureLoader();
+    const setupTexture = (path, isColor = false) => {
+        const tex = loader.load(path);
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(50, 50);
+        tex.anisotropy = 16;
+        if (isColor) tex.colorSpace = THREE.SRGBColorSpace;
+        return tex;
+    };
+
+    // load diffuse map
+    const groundDiff = setupTexture('./assets/textures/ground/ground_diff_4k.jpg', true);
     const groundGeo = new THREE.PlaneGeometry(500, 500);
-    const groundMat = new THREE.MeshStandardMaterial({ 
-        color: 0x1c2b18,
-        roughness: 1, 
-        metalness: 0 
+    const groundMat = new THREE.MeshStandardMaterial({
+        map: groundDiff,
+        roughness: 0.9,
+        metalness: 0,
     });
-    
+
     const ground = new THREE.Mesh(groundGeo, groundMat);
     ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.05; 
+    ground.position.y = -0.05;
     ground.receiveShadow = true;
     scene.add(ground);
 
     // --- 3. Bầu trời & ánh sáng ---
     // Load file .hdr
     const rgbeLoader = new RGBELoader();
-    rgbeLoader.load('./assets/textures/citrus_orchard_puresky_4k.hdr', function(texture) {
+    rgbeLoader.load('./assets/textures/citrus_orchard_puresky_4k.hdr', function (texture) {
         texture.mapping = THREE.EquirectangularReflectionMapping;
-        
+
         // Gán làm nền trời
         scene.background = texture;
-        
+
         // Gán làm ánh sáng môi trường (Quan trọng: Giúp xe phản chiếu bầu trời rất đẹp)
-        scene.environment = texture; 
-        
+        scene.environment = texture;
+
         // Chỉnh độ sáng của nền trời
-        scene.backgroundIntensity = 0.4; 
+        scene.backgroundIntensity = 0.4;
         scene.environmentIntensity = 0.2;
-    }, undefined, function(err) {
+    }, undefined, function (err) {
         console.error("Lỗi load HDRI sky.hdr. Hãy chắc chắn bạn đã tải file và đặt đúng chỗ.", err);
         scene.background = new THREE.Color(0xa0a0a0);
     });
