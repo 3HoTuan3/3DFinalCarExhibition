@@ -5,7 +5,7 @@ Trình diễn triển lãm xe hơi 3D với điều khiển FPS, hoạt cảnh t
 ## Nội dung chính
 - Scene và ánh sáng: [`setupScene`](src/scene/setupScene.js), [`setupLights`](src/scene/setupLight.js), [`setupCamera`](src/scene/setupCamera.js)
 - Điều khiển người chơi: [`setupControls`](src/scene/setupControls.js) (Pointer Lock + WASD)
-- Cổng vào: [`Entrance`](src/scene/entrance.js) (cửa mở/đóng, teleport người chơi)
+- Cổng vào: [`Entrance`](src/scene/entrance.js)
 - Quản lý xe: [`CarManager`](src/booth/carManager.js) (load GLTF, hiệu ứng scale, dispose tài nguyên)
 - Booth thường: [`Booth`](src/booth/booth.js) (LED canvas, trợ lý ảo, xe theo hãng)
 - Booth VIP: [`VipBooth`](src/booth/vipBooth.js) (sàn xoay, hàng rào, màn LED cung tròn, trợ lý ảo)
