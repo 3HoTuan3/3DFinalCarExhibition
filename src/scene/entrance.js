@@ -16,6 +16,17 @@ export class Entrance {
         this.wallTex.colorSpace = THREE.SRGBColorSpace;
         this.wallTex.anisotropy = 8;
 
+        const loadCarpetTex = (path) => {
+            const tex = this.loader.load(path);
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(3, 15); 
+            return tex;
+        };
+
+        this.carpetDiff = loadCarpetTex('./assets/textures/carpet/velour_velvet_diff_4k.jpg');
+        this.carpetDiff.colorSpace = THREE.SRGBColorSpace;
+
         this.init();
     }
 
@@ -103,10 +114,18 @@ export class Entrance {
         const carpetLength = 30;
         const carpetGeo = new THREE.PlaneGeometry(6, carpetLength);
         const carpetMat = new THREE.MeshStandardMaterial({
-            color: 0xaa0000,
-            roughness: 1.0,
+            map: this.carpetDiff,
+            normalMap: this.carpetNor,
+            normalScale: new THREE.Vector2(1, 1),
+            aoMap: this.carpetArm,
+            roughnessMap: this.carpetArm,
+            metalnessMap: this.carpetArm,
+            color: 0xF63049,
+            roughness: 1.0, 
+            metalness: 0.0,
             side: THREE.DoubleSide
         });
+
         const carpet = new THREE.Mesh(carpetGeo, carpetMat);
         carpet.rotation.x = -Math.PI / 2;
         carpet.position.set(0, 0.02, -15);
