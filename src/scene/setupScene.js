@@ -78,9 +78,24 @@ export function setupScene() {
     });
 
     // --- Tường bao quanh (3 Mặt: Trái, Phải, Sau) ---
+    const setupWallTexture = (path, isColor = false) => {
+        const tex = loader.load(path);
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(4, 1);
+        if (isColor) tex.colorSpace = THREE.SRGBColorSpace;
+        return tex;
+    };
+
+    const wallDiff = setupWallTexture('./assets/textures/wall/beige_wall_001_diff_4k.jpg', true);
+    const wallMat = new THREE.MeshStandardMaterial({
+        map: wallDiff,
+        roughness: 0.9,
+        metalness: 0,
+    });
+
     const wallHeight = 8;
     const wallGeo = new THREE.BoxGeometry(40, wallHeight, 0.5);
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.5 }); // Tường xám đậm
 
     // 1. Tường Sau (Back - phía z = 20)
     const backWall = new THREE.Mesh(wallGeo, wallMat);
@@ -102,11 +117,34 @@ export function setupScene() {
     rightWall.receiveShadow = true;
     scene.add(rightWall);
 
+    // --- Len chân tường ---
+    const baseboardGeo = new THREE.BoxGeometry(40, 0.2, 0.6); // Cao 20cm, Dày hơn tường xíu (0.6)
+    const baseboardMat = new THREE.MeshStandardMaterial({ color: 0xEFE9E3, roughness: 0.5 });
+
+    // Len chân tường sau
+    const bbBack = new THREE.Mesh(baseboardGeo, baseboardMat);
+    bbBack.position.set(0, 0.1, 20);
+    scene.add(bbBack);
+
+    // Len chân tường trái
+    const bbLeft = new THREE.Mesh(baseboardGeo, baseboardMat);
+    bbLeft.rotation.y = Math.PI / 2;
+    bbLeft.position.set(-20, 0.1, 0);
+    scene.add(bbLeft);
+
+    // Len chân tường phải
+    const bbRight = new THREE.Mesh(baseboardGeo, baseboardMat);
+    bbRight.rotation.y = Math.PI / 2;
+    bbRight.position.set(20, 0.1, 0);
+    scene.add(bbRight);
+
     // --- 3. TRẦN NHÀ ---
     const ceilingGeo = new THREE.PlaneGeometry(40, 40);
+    const ceilingDiff = setupWallTexture('./assets/textures/wall/beige_wall_001_diff_4k.jpg', true);
     const ceilingMat = new THREE.MeshStandardMaterial({
-        color: 0x222222,
-        side: THREE.DoubleSide
+        map: ceilingDiff,
+        roughness: 0.9,
+        metalness: 0,
     });
     const ceiling = new THREE.Mesh(ceilingGeo, ceilingMat);
     ceiling.rotation.x = Math.PI / 2;
