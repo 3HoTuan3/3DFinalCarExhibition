@@ -6,7 +6,7 @@ export class MusicManager {
         
         // Tạo Audio object
         this.audio = new Audio();
-        this.audio.volume = 0.5; // Âm lượng mặc định 50%
+        this.audio.volume = 0.2; // Âm lượng mặc định 20%
 
         // Lấy các element UI
         this.uiName = document.getElementById('music-name');

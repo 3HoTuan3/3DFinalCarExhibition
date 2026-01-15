@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
 export function setupScene() {
     const scene = new THREE.Scene();
@@ -30,7 +31,42 @@ export function setupScene() {
         }
     }
 
-    // --- TƯỜNG BAO QUANH (3 Mặt: Trái, Phải, Sau) ---
+    // --- 2. Sân ngoài ---
+    const textureLoader = new THREE.TextureLoader();
+    const groundGeo = new THREE.PlaneGeometry(500, 500);
+    const groundMat = new THREE.MeshStandardMaterial({ 
+        color: 0x1c2b18,
+        roughness: 1, 
+        metalness: 0 
+    });
+    
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.05; 
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    // --- 3. Bầu trời & ánh sáng ---
+    // Load file .hdr
+    const rgbeLoader = new RGBELoader();
+    rgbeLoader.load('./assets/textures/citrus_orchard_puresky_4k.hdr', function(texture) {
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        
+        // Gán làm nền trời
+        scene.background = texture;
+        
+        // Gán làm ánh sáng môi trường (Quan trọng: Giúp xe phản chiếu bầu trời rất đẹp)
+        scene.environment = texture; 
+        
+        // Chỉnh độ sáng của nền trời
+        scene.backgroundIntensity = 0.4; 
+        scene.environmentIntensity = 0.2;
+    }, undefined, function(err) {
+        console.error("Lỗi load HDRI sky.hdr. Hãy chắc chắn bạn đã tải file và đặt đúng chỗ.", err);
+        scene.background = new THREE.Color(0xa0a0a0);
+    });
+
+    // --- Tường bao quanh (3 Mặt: Trái, Phải, Sau) ---
     const wallHeight = 8;
     const wallGeo = new THREE.BoxGeometry(40, wallHeight, 0.5);
     const wallMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.5 }); // Tường xám đậm
