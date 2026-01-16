@@ -20,7 +20,7 @@ export class Entrance {
             const tex = this.loader.load(path);
             tex.wrapS = THREE.RepeatWrapping;
             tex.wrapT = THREE.RepeatWrapping;
-            tex.repeat.set(3, 15); 
+            tex.repeat.set(3, 15);
             return tex;
         };
 
@@ -121,7 +121,7 @@ export class Entrance {
             roughnessMap: this.carpetArm,
             metalnessMap: this.carpetArm,
             color: 0xF63049,
-            roughness: 1.0, 
+            roughness: 1.0,
             metalness: 0.0,
             side: THREE.DoubleSide
         });
@@ -182,26 +182,11 @@ export class Entrance {
         // Mở rộng ra
         gsap.to(this.leftDoor.rotation, { y: -Math.PI / 2, duration: 2, ease: "power2.inOut" });
         gsap.to(this.rightDoor.rotation, { y: Math.PI + Math.PI / 2, duration: 2, ease: "power2.inOut" });
-        this.teleportUserOut();
     }
 
     closeDoors() {
         this.isOpen = false;
         gsap.to(this.leftDoor.rotation, { y: 0, duration: 2 });
         gsap.to(this.rightDoor.rotation, { y: Math.PI, duration: 2 });
-    }
-
-    teleportUserOut() {
-        if (this.controls) {
-            const player = this.controls.getObject();
-            gsap.to(player.position, {
-                x: 0,
-                z: 30,
-                duration: 1,
-                onComplete: () => {
-                    player.lookAt(0, 1.6, 0);
-                }
-            });
-        }
     }
 }
