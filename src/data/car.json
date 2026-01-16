@@ -984,7 +984,7 @@
             "seating_capacity": 5,
             "year": 2010,
             "offset": {
-                "x": -1.5,
+                "x": 1.0,
                 "z": 0.0
             },
             "global_information": "The 2010 Ford F-150 SVT Raptor is a high-performance off-road beast built for desert racing. With a powerful 6.2L V8, long-travel suspension, and wide stance, it's designed for extreme terrain while offering impressive on-road capability."
