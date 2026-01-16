@@ -32,7 +32,6 @@ export class Assistant {
                     if (child.isMesh) {
                         child.castShadow = true;
                         child.receiveShadow = true;
-                        //
                         child.userData.isAssistant = true;
                         child.userData.dialogue = this.dialogueData;
                         child.userData.assistantName = "Showroom Assistant";
@@ -41,19 +40,15 @@ export class Assistant {
 
                 // --- ANIMATION ---
                 this.mixer = new THREE.AnimationMixer(this.model);
-
-                // Duyệt qua tất cả animation có trong file
                 gltf.animations.forEach((clip) => {
-                    // Tạo action cho từng clip và lưu vào object this.actions
                     const action = this.mixer.clipAction(clip);
                     this.actions[clip.name] = action;
-                    // In tên ra console file có những animation gì
                     console.log(`Animation found: "${clip.name}"`);
                 });
 
                 this.parent.add(this.model);
 
-                // --- CHẠY ANIMATION ---
+                // --- Animation ---
                 this.playAnimation("Idle");
             },
             undefined,

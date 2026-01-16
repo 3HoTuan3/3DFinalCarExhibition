@@ -1,6 +1,6 @@
 export class MusicManager {
     constructor(playlist) {
-        this.playlist = playlist; // Mảng chứa danh sách bài hát
+        this.playlist = playlist;
         this.currentIndex = 0;
         this.isPlaying = false;
         
@@ -37,7 +37,7 @@ export class MusicManager {
         this.audio.play()
             .then(() => {
                 this.isPlaying = true;
-                this.uiContainer.classList.add('playing'); // Thêm hiệu ứng nếu cần
+                this.uiContainer.classList.add('playing');
             })
             .catch(e => console.log("Cần tương tác người dùng để phát nhạc:", e));
     }
@@ -63,7 +63,7 @@ export class MusicManager {
         if (this.isPlaying) this.play();
     }
 
-    // Hàm format giây sang MM:SS
+    // Format giây sang MM:SS
     formatTime(seconds) {
         if (isNaN(seconds)) return "00:00";
         const m = Math.floor(seconds / 60);

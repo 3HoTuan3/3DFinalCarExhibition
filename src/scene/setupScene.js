@@ -63,10 +63,10 @@ export function setupScene() {
     rgbeLoader.load('./assets/textures/citrus_orchard_puresky_4k.hdr', function (texture) {
         texture.mapping = THREE.EquirectangularReflectionMapping;
 
-        // Gán làm nền trời
+        // Gán nền trời
         scene.background = texture;
 
-        // Gán làm ánh sáng môi trường (Quan trọng: Giúp xe phản chiếu bầu trời rất đẹp)
+        // Gán ánh sáng môi trường
         scene.environment = texture;
 
         // Chỉnh độ sáng của nền trời
@@ -138,7 +138,7 @@ export function setupScene() {
     bbRight.position.set(20, 0.1, 0);
     scene.add(bbRight);
 
-    // --- 3. TRẦN NHÀ ---
+    // --- 3. Trần nhà ---
     const ceilingGeo = new THREE.PlaneGeometry(40, 40);
     const ceilingDiff = setupWallTexture('./assets/textures/wall/beige_wall_001_diff_4k.jpg', true);
     const ceilingMat = new THREE.MeshStandardMaterial({
@@ -151,7 +151,7 @@ export function setupScene() {
     ceiling.position.y = wallHeight;
     scene.add(ceiling);
 
-    // --- 4. HỆ THỐNG ĐÈN TRẦN ---
+    // --- 4. Đèn trần ---
     const lightTargets = [
         { x: 0, z: 0 },
         { x: -12, z: -12 },
@@ -168,7 +168,7 @@ export function setupScene() {
         fixture.position.set(pos.x, wallHeight - 0.1, pos.z);
         scene.add(fixture);
 
-        // b) Tạo lõi đèn phát sáng (Emissive)
+        // b) Tạo lõi đèn phát sáng
         const bulbGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.05, 32);
         const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffffee });
         const bulb = new THREE.Mesh(bulbGeo, bulbMat);

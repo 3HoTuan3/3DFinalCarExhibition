@@ -265,7 +265,7 @@ export class VipBooth {
         ctx.font = 'bold 80px Arial';
         ctx.shadowColor = '#00ffff';
         ctx.shadowBlur = 10;
-        const text = "VIP EXHIBITION - 2024 SUPER CAR COLLECTION";
+        const text = "VIP EXHIBITION - 2026 SUPER CAR TOYOTA COLLECTION";
         // Vẽ chữ tại vị trí this.textX
         ctx.fillText(text, this.textX + 250, 160);
         // Cập nhật vị trí (Chạy sang trái)

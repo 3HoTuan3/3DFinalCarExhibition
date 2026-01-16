@@ -130,27 +130,19 @@ async function initGame() {
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('click', onMouseClick);
 
-    // G. BẮT ĐẦU VÒNG LẶP
     animate();
 }
 
-// --- 2. VÒNG LẶP ANIMATION (LOOP) ---
+// --- 2. Animation ---
 function animate() {
     requestAnimationFrame(animate);
-
-    if (!scene || !camera || !renderer) return; // Chưa init thì không render
-
+    if (!scene || !camera || !renderer) return; 
     const delta = clock.getDelta();
-
-    // Update di chuyển & cửa
     if (controls && updateMovement) {
         const isDoorOpen = entrance ? entrance.isOpen : false;
         updateMovement(delta, isDoorOpen);
     }
-
-    // Update các Booth & Assistant
     if (vipBooth) vipBooth.update(delta);
-
     booths.forEach(item => {
         if (item.booth && item.booth.update) item.booth.update(delta);
     });
@@ -158,7 +150,7 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-// --- 3. XỬ LÝ SỰ KIỆN GIAO DIỆN MÀN HÌNH CHỜ ---
+// --- 3. Giao diện màn hình chờ ---
 const playBtn = document.getElementById('play-btn');
 const progressContainer = document.getElementById('progress-container');
 
@@ -176,7 +168,7 @@ if (playBtn) {
         // 3. Bắt đầu khởi tạo game
         initGame();
 
-        // 4. TIMEOUT AN TOÀN: Nếu sau 15 giây vẫn chưa xong, ẩn loading screen
+        // 4. TIMEOUT
         setTimeout(() => {
             const loadingScreen = document.getElementById('loading-screen');
             if (loadingScreen && loadingScreen.style.display !== 'none') {
@@ -331,19 +323,20 @@ function showCarInfo(carData) {
     document.getElementById('info-desc').innerText = carData.global_information || "No description available.";
 
     infoPanel.style.display = 'block';
-    if (controls) controls.unlock(); // Hiện chuột để bấm nút đóng
+    if (controls) controls.unlock();
 }
 
-// Sự kiện đóng bảng thông tin
+// Đóng bảng thông tin
 closeBtn.addEventListener('click', () => {
     infoPanel.style.display = 'none';
-    if (controls) controls.lock(); // Ẩn chuột, tiếp tục game
+    if (controls) controls.lock();
 });
 
+// Ẩn cảnh báo THREE.WebGLTextures
 const originalWarn = console.warn;
 console.warn = function (msg) {
     if (msg && msg.includes && msg.includes('THREE.WebGLTextures')) {
-        return; // Bỏ qua cảnh báo THREE.js texture
+        return;
     }
     originalWarn.apply(console, arguments);
 };

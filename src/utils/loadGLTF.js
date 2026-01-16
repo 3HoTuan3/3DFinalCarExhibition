@@ -3,7 +3,6 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
 export const loadGLTF = (path) => {
     return new Promise((resolve, reject) => {
-        // KHÔNG TRUYỀN MANAGER VÀO ĐÂY -> Nó sẽ tự dùng DefaultLoadingManager
         const loader = new GLTFLoader();
         
         const dracoLoader = new DRACOLoader();
