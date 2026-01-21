@@ -193,7 +193,7 @@ export class VipBooth {
 
             // Vị trí cột
             post.position.set(x, 0.7, z);
-            post.castShadow = true;
+            post.castShadow = false;
             this.mesh.add(post);
         }
 

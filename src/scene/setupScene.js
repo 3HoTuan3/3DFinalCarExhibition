@@ -186,7 +186,7 @@ export function setupScene() {
         spotLight.penumbra = 0.5;
         spotLight.distance = 30;
         spotLight.decay = 1;
-        spotLight.castShadow = false;
+        spotLight.castShadow = true;
 
         // Tối ưu shadow map
         spotLight.shadow.mapSize.width = 512;

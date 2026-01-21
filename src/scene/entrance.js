@@ -20,7 +20,6 @@ export class Entrance {
             const tex = this.loader.load(path);
             tex.wrapS = THREE.RepeatWrapping;
             tex.wrapT = THREE.RepeatWrapping;
-            tex.repeat.set(3, 15);
             return tex;
         };
 
@@ -121,7 +120,6 @@ export class Entrance {
             roughnessMap: this.carpetArm,
             metalnessMap: this.carpetArm,
             color: 0xF63049,
-            roughness: 1.0,
             metalness: 0.0,
             side: THREE.DoubleSide
         });
