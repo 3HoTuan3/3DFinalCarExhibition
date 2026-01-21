@@ -4,7 +4,7 @@
             "Name": "Toyota Celica Turbo IMSA GTO",
             "vehicle_type": "Race Car",
             "model": "./assets/models/Toyota/toyota_celica_turbo_imsa_gto.glb",
-            "scale": 0.02,
+            "scale": 0.01,
             "Price": "N/A (Race Car)",
             "engine": "2.1L Turbo Inline-4",
             "transmission": "5-Speed Sequential",
